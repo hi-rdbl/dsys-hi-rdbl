@@ -33,20 +33,35 @@ export const LayoutTab: React.FC = () => {
                 <span className="text-slate-300">Base Grid Multiplier</span>
                 <span className="text-indigo-400 font-mono">{baseUnit}px</span>
               </div>
-              <input
-                type="range"
-                min="4"
-                max="16"
-                step="2"
-                value={baseUnit}
-                onChange={(e) => updateSpacing(parseInt(e.target.value))}
-                className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-indigo-500"
-              />
-              <div className="flex justify-between text-[10px] text-slate-500 font-mono">
-                <span>4px</span>
-                <span>8px (Standard)</span>
-                <span>12px</span>
-                <span>16px</span>
+              <div className="flex items-center gap-3">
+                <input
+                  type="range"
+                  min="4"
+                  max="16"
+                  step="2"
+                  value={baseUnit}
+                  onChange={(e) => updateSpacing(parseInt(e.target.value))}
+                  className="flex-1 h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-indigo-500"
+                />
+                
+                {/* Spacing Stepper */}
+                <div className="flex items-center border border-slate-800 bg-slate-950/60 rounded-lg overflow-hidden h-8 flex-shrink-0">
+                  <button
+                    onClick={() => updateSpacing(Math.max(4, baseUnit - 2))}
+                    className="px-2.5 hover:bg-slate-900 text-slate-400 hover:text-white font-bold text-xs h-full transition-colors"
+                  >
+                    -
+                  </button>
+                  <span className="px-2 text-xs font-mono font-bold text-slate-300 min-w-[24px] text-center">
+                    {baseUnit}
+                  </span>
+                  <button
+                    onClick={() => updateSpacing(Math.min(16, baseUnit + 2))}
+                    className="px-2.5 hover:bg-slate-900 text-slate-400 hover:text-white font-bold text-xs h-full transition-colors"
+                  >
+                    +
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -60,15 +75,31 @@ export const LayoutTab: React.FC = () => {
                 {Object.entries(tokens.radius).map(([key, val]) => {
                   if (key === 'none' || key === 'full' || key === 'button') return null;
                   const radiusKey = key as keyof typeof tokens.radius;
+                  const numVal = parseInt(val) || 0;
+                  
                   return (
                     <div key={key} className="flex flex-col gap-1">
                       <label className="text-[10px] uppercase font-bold text-slate-500">{key}</label>
-                      <input
-                        type="text"
-                        value={val}
-                        onChange={(e) => updateRadius(radiusKey, e.target.value)}
-                        className="px-3.5 py-1.5 text-xs bg-slate-950/60 border border-slate-800 rounded-lg outline-none font-mono text-slate-200 focus:border-indigo-500"
-                      />
+                      <div className="flex items-center border border-slate-800 bg-slate-950/60 rounded-lg overflow-hidden h-8">
+                        <button
+                          onClick={() => updateRadius(radiusKey, `${Math.max(0, numVal - 1)}px`)}
+                          className="px-2 hover:bg-slate-900 text-slate-400 hover:text-white text-xs font-bold h-full transition-colors"
+                        >
+                          -
+                        </button>
+                        <input
+                          type="text"
+                          value={val}
+                          onChange={(e) => updateRadius(radiusKey, e.target.value)}
+                          className="w-full bg-transparent text-center text-xs font-mono text-slate-200 outline-none border-none px-1"
+                        />
+                        <button
+                          onClick={() => updateRadius(radiusKey, `${numVal + 1}px`)}
+                          className="px-2 hover:bg-slate-900 text-slate-400 hover:text-white text-xs font-bold h-full transition-colors"
+                        >
+                          +
+                        </button>
+                      </div>
                     </div>
                   );
                 })}
@@ -105,41 +136,104 @@ export const LayoutTab: React.FC = () => {
                 Icon Size & Stroke
               </h3>
               <div className="grid grid-cols-2 gap-3">
+                {/* Size Sm */}
                 <div className="flex flex-col gap-1">
                   <label className="text-[10px] uppercase font-bold text-slate-500">Size Sm</label>
-                  <input
-                    type="text"
-                    value={tokens.icons.sizeSm}
-                    onChange={(e) => updateIconToken('sizeSm', e.target.value)}
-                    className="px-3.5 py-1.5 text-xs bg-slate-950/60 border border-slate-800 rounded-lg outline-none font-mono text-slate-200 focus:border-indigo-500"
-                  />
+                  <div className="flex items-center border border-slate-800 bg-slate-950/60 rounded-lg overflow-hidden h-8">
+                    <button
+                      onClick={() => updateIconToken('sizeSm', `${Math.max(0, parseInt(tokens.icons.sizeSm) - 1)}px`)}
+                      className="px-2 hover:bg-slate-900 text-slate-400 hover:text-white text-xs font-bold h-full transition-colors"
+                    >
+                      -
+                    </button>
+                    <input
+                      type="text"
+                      value={tokens.icons.sizeSm}
+                      onChange={(e) => updateIconToken('sizeSm', e.target.value)}
+                      className="w-full bg-transparent text-center text-xs font-mono text-slate-200 outline-none border-none px-1"
+                    />
+                    <button
+                      onClick={() => updateIconToken('sizeSm', `${parseInt(tokens.icons.sizeSm) + 1}px`)}
+                      className="px-2 hover:bg-slate-900 text-slate-400 hover:text-white text-xs font-bold h-full transition-colors"
+                    >
+                      +
+                    </button>
+                  </div>
                 </div>
+
+                {/* Size Md */}
                 <div className="flex flex-col gap-1">
                   <label className="text-[10px] uppercase font-bold text-slate-500">Size Md</label>
-                  <input
-                    type="text"
-                    value={tokens.icons.sizeMd}
-                    onChange={(e) => updateIconToken('sizeMd', e.target.value)}
-                    className="px-3.5 py-1.5 text-xs bg-slate-950/60 border border-slate-800 rounded-lg outline-none font-mono text-slate-200 focus:border-indigo-500"
-                  />
+                  <div className="flex items-center border border-slate-800 bg-slate-950/60 rounded-lg overflow-hidden h-8">
+                    <button
+                      onClick={() => updateIconToken('sizeMd', `${Math.max(0, parseInt(tokens.icons.sizeMd) - 1)}px`)}
+                      className="px-2 hover:bg-slate-900 text-slate-400 hover:text-white text-xs font-bold h-full transition-colors"
+                    >
+                      -
+                    </button>
+                    <input
+                      type="text"
+                      value={tokens.icons.sizeMd}
+                      onChange={(e) => updateIconToken('sizeMd', e.target.value)}
+                      className="w-full bg-transparent text-center text-xs font-mono text-slate-200 outline-none border-none px-1"
+                    />
+                    <button
+                      onClick={() => updateIconToken('sizeMd', `${parseInt(tokens.icons.sizeMd) + 1}px`)}
+                      className="px-2 hover:bg-slate-900 text-slate-400 hover:text-white text-xs font-bold h-full transition-colors"
+                    >
+                      +
+                    </button>
+                  </div>
                 </div>
+
+                {/* Size Lg */}
                 <div className="flex flex-col gap-1">
                   <label className="text-[10px] uppercase font-bold text-slate-500">Size Lg</label>
-                  <input
-                    type="text"
-                    value={tokens.icons.sizeLg}
-                    onChange={(e) => updateIconToken('sizeLg', e.target.value)}
-                    className="px-3.5 py-1.5 text-xs bg-slate-950/60 border border-slate-800 rounded-lg outline-none font-mono text-slate-200 focus:border-indigo-500"
-                  />
+                  <div className="flex items-center border border-slate-800 bg-slate-950/60 rounded-lg overflow-hidden h-8">
+                    <button
+                      onClick={() => updateIconToken('sizeLg', `${Math.max(0, parseInt(tokens.icons.sizeLg) - 1)}px`)}
+                      className="px-2 hover:bg-slate-900 text-slate-400 hover:text-white text-xs font-bold h-full transition-colors"
+                    >
+                      -
+                    </button>
+                    <input
+                      type="text"
+                      value={tokens.icons.sizeLg}
+                      onChange={(e) => updateIconToken('sizeLg', e.target.value)}
+                      className="w-full bg-transparent text-center text-xs font-mono text-slate-200 outline-none border-none px-1"
+                    />
+                    <button
+                      onClick={() => updateIconToken('sizeLg', `${parseInt(tokens.icons.sizeLg) + 1}px`)}
+                      className="px-2 hover:bg-slate-900 text-slate-400 hover:text-white text-xs font-bold h-full transition-colors"
+                    >
+                      +
+                    </button>
+                  </div>
                 </div>
+
+                {/* Stroke */}
                 <div className="flex flex-col gap-1">
                   <label className="text-[10px] uppercase font-bold text-slate-500">Stroke</label>
-                  <input
-                    type="text"
-                    value={tokens.icons.strokeWidth}
-                    onChange={(e) => updateIconToken('strokeWidth', e.target.value)}
-                    className="px-3.5 py-1.5 text-xs bg-slate-950/60 border border-slate-800 rounded-lg outline-none font-mono text-slate-200 focus:border-indigo-500"
-                  />
+                  <div className="flex items-center border border-slate-800 bg-slate-950/60 rounded-lg overflow-hidden h-8">
+                    <button
+                      onClick={() => updateIconToken('strokeWidth', `${Math.max(0.5, parseFloat(tokens.icons.strokeWidth) - 0.5)}px`)}
+                      className="px-2 hover:bg-slate-900 text-slate-400 hover:text-white text-xs font-bold h-full transition-colors"
+                    >
+                      -
+                    </button>
+                    <input
+                      type="text"
+                      value={tokens.icons.strokeWidth}
+                      onChange={(e) => updateIconToken('strokeWidth', e.target.value)}
+                      className="w-full bg-transparent text-center text-xs font-mono text-slate-200 outline-none border-none px-1"
+                    />
+                    <button
+                      onClick={() => updateIconToken('strokeWidth', `${parseFloat(tokens.icons.strokeWidth) + 0.5}px`)}
+                      className="px-2 hover:bg-slate-900 text-slate-400 hover:text-white text-xs font-bold h-full transition-colors"
+                    >
+                      +
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>

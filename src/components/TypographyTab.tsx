@@ -55,19 +55,40 @@ export const TypographyTab: React.FC = () => {
             </div>
 
             {/* Base Font Size */}
-            <div className="flex flex-col gap-1.5">
+            <div className="flex flex-col gap-2">
               <div className="flex items-center justify-between text-xs font-bold uppercase tracking-wider text-slate-400">
                 <span>Base Size</span>
                 <span className="text-indigo-400 font-mono">{baseSize}px</span>
               </div>
-              <input
-                type="range"
-                min="12"
-                max="24"
-                value={baseSize}
-                onChange={(e) => updateTypography('baseSize', parseInt(e.target.value))}
-                className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-indigo-500"
-              />
+              <div className="flex items-center gap-3">
+                <input
+                  type="range"
+                  min="12"
+                  max="24"
+                  value={baseSize}
+                  onChange={(e) => updateTypography('baseSize', parseInt(e.target.value))}
+                  className="flex-1 h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-indigo-500"
+                />
+                
+                {/* Precise Stepper */}
+                <div className="flex items-center border border-slate-800 bg-slate-950/60 rounded-lg overflow-hidden h-8 flex-shrink-0">
+                  <button
+                    onClick={() => updateTypography('baseSize', Math.max(12, baseSize - 1))}
+                    className="px-2.5 hover:bg-slate-900 text-slate-400 hover:text-white font-bold text-xs transition-colors h-full"
+                  >
+                    -
+                  </button>
+                  <span className="px-2.5 text-xs font-mono font-bold text-slate-300 min-w-[28px] text-center">
+                    {baseSize}
+                  </span>
+                  <button
+                    onClick={() => updateTypography('baseSize', Math.min(24, baseSize + 1))}
+                    className="px-2.5 hover:bg-slate-900 text-slate-400 hover:text-white font-bold text-xs transition-colors h-full"
+                  >
+                    +
+                  </button>
+                </div>
+              </div>
             </div>
 
             {/* Scale Factor */}

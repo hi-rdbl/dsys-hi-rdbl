@@ -37,34 +37,83 @@ export const MotionTab: React.FC = () => {
             {/* Transition Durations */}
             <div className="space-y-3">
               <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Durations</span>
-              <div className="space-y-2">
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-slate-400 font-medium">Fast (150ms)</span>
-                  <input
-                    type="text"
-                    value={tokens.motion.durationFast}
-                    onChange={(e) => updateMotion('durationFast', e.target.value)}
-                    className="w-24 px-2.5 py-1 text-right text-xs bg-slate-950/60 border border-slate-800 rounded font-mono text-slate-200 focus:border-indigo-500 outline-none"
-                  />
+              <div className="space-y-3">
+                
+                {/* durationFast */}
+                <div className="flex items-center justify-between text-xs gap-3">
+                  <span className="text-slate-400 font-medium flex-shrink-0">Fast</span>
+                  <div className="flex items-center border border-slate-800 bg-slate-950/60 rounded-lg overflow-hidden h-8 w-28">
+                    <button
+                      onClick={() => updateMotion('durationFast', `${Math.max(0, parseInt(tokens.motion.durationFast) - 50)}ms`)}
+                      className="px-2 hover:bg-slate-900 text-slate-400 hover:text-white text-xs font-bold h-full transition-colors"
+                    >
+                      -
+                    </button>
+                    <input
+                      type="text"
+                      value={tokens.motion.durationFast}
+                      onChange={(e) => updateMotion('durationFast', e.target.value)}
+                      className="w-full bg-transparent text-center text-xs font-mono text-slate-200 outline-none border-none px-1"
+                    />
+                    <button
+                      onClick={() => updateMotion('durationFast', `${parseInt(tokens.motion.durationFast) + 50}ms`)}
+                      className="px-2 hover:bg-slate-900 text-slate-400 hover:text-white text-xs font-bold h-full transition-colors"
+                    >
+                      +
+                    </button>
+                  </div>
                 </div>
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-slate-400 font-medium">Normal (300ms)</span>
-                  <input
-                    type="text"
-                    value={tokens.motion.durationNormal}
-                    onChange={(e) => updateMotion('durationNormal', e.target.value)}
-                    className="w-24 px-2.5 py-1 text-right text-xs bg-slate-950/60 border border-slate-800 rounded font-mono text-slate-200 focus:border-indigo-500 outline-none"
-                  />
+
+                {/* durationNormal */}
+                <div className="flex items-center justify-between text-xs gap-3">
+                  <span className="text-slate-400 font-medium flex-shrink-0">Normal</span>
+                  <div className="flex items-center border border-slate-800 bg-slate-950/60 rounded-lg overflow-hidden h-8 w-28">
+                    <button
+                      onClick={() => updateMotion('durationNormal', `${Math.max(0, parseInt(tokens.motion.durationNormal) - 50)}ms`)}
+                      className="px-2 hover:bg-slate-900 text-slate-400 hover:text-white text-xs font-bold h-full transition-colors"
+                    >
+                      -
+                    </button>
+                    <input
+                      type="text"
+                      value={tokens.motion.durationNormal}
+                      onChange={(e) => updateMotion('durationNormal', e.target.value)}
+                      className="w-full bg-transparent text-center text-xs font-mono text-slate-200 outline-none border-none px-1"
+                    />
+                    <button
+                      onClick={() => updateMotion('durationNormal', `${parseInt(tokens.motion.durationNormal) + 50}ms`)}
+                      className="px-2 hover:bg-slate-900 text-slate-400 hover:text-white text-xs font-bold h-full transition-colors"
+                    >
+                      +
+                    </button>
+                  </div>
                 </div>
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-slate-400 font-medium">Slow (500ms)</span>
-                  <input
-                    type="text"
-                    value={tokens.motion.durationSlow}
-                    onChange={(e) => updateMotion('durationSlow', e.target.value)}
-                    className="w-24 px-2.5 py-1 text-right text-xs bg-slate-950/60 border border-slate-800 rounded font-mono text-slate-200 focus:border-indigo-500 outline-none"
-                  />
+
+                {/* durationSlow */}
+                <div className="flex items-center justify-between text-xs gap-3">
+                  <span className="text-slate-400 font-medium flex-shrink-0">Slow</span>
+                  <div className="flex items-center border border-slate-800 bg-slate-950/60 rounded-lg overflow-hidden h-8 w-28">
+                    <button
+                      onClick={() => updateMotion('durationSlow', `${Math.max(0, parseInt(tokens.motion.durationSlow) - 50)}ms`)}
+                      className="px-2 hover:bg-slate-900 text-slate-400 hover:text-white text-xs font-bold h-full transition-colors"
+                    >
+                      -
+                    </button>
+                    <input
+                      type="text"
+                      value={tokens.motion.durationSlow}
+                      onChange={(e) => updateMotion('durationSlow', e.target.value)}
+                      className="w-full bg-transparent text-center text-xs font-mono text-slate-200 outline-none border-none px-1"
+                    />
+                    <button
+                      onClick={() => updateMotion('durationSlow', `${parseInt(tokens.motion.durationSlow) + 50}ms`)}
+                      className="px-2 hover:bg-slate-900 text-slate-400 hover:text-white text-xs font-bold h-full transition-colors"
+                    >
+                      +
+                    </button>
+                  </div>
                 </div>
+
               </div>
             </div>
 
