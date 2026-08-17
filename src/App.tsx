@@ -8,6 +8,7 @@ import { MotionTab } from './components/MotionTab';
 import { ComponentsTab } from './components/ComponentsTab';
 import { IconsTab } from './components/IconsTab';
 import { ExportTab } from './components/ExportTab';
+import { LivePreviewSidebar } from './components/LivePreviewSidebar';
 
 import {
   LayoutGrid,
@@ -39,8 +40,11 @@ const MainDashboard: React.FC = () => {
     { id: 'export', name: 'Export Assets', icon: Download },
   ] as const;
 
+  // Determine if we should show the 3rd column compact preview panel
+  const showPreviewSidebar = ['colors', 'typography', 'spacing', 'motion'].includes(activeTab);
+
   return (
-    <div className="flex h-screen w-screen overflow-hidden bg-slate-950 text-slate-100 font-sans">
+    <div className="flex h-screen w-screen overflow-hidden bg-slate-950 text-slate-100 font-sans select-none">
       
       {/* Sidebar Navigation */}
       <aside className="w-64 bg-slate-900 border-r border-slate-800 flex flex-col h-full flex-shrink-0">
@@ -100,8 +104,8 @@ const MainDashboard: React.FC = () => {
       </aside>
 
       {/* Main Spacious Content Canvas */}
-      <main className="flex-1 h-full overflow-y-auto bg-slate-950 p-8 xl:p-12">
-        <div className="max-w-5xl mx-auto">
+      <main className="flex-1 h-full overflow-y-auto bg-slate-950 p-8 xl:p-12 border-r border-slate-800/50">
+        <div className={`mx-auto ${showPreviewSidebar ? 'max-w-4xl' : 'max-w-5xl'} transition-all duration-300`}>
           {activeTab === 'dashboard' && <DashboardTab />}
           {activeTab === 'colors' && <ColorsTab />}
           {activeTab === 'typography' && <TypographyTab />}
@@ -112,6 +116,9 @@ const MainDashboard: React.FC = () => {
           {activeTab === 'export' && <ExportTab />}
         </div>
       </main>
+
+      {/* Sticky 3rd Column Live Preview Panel */}
+      {showPreviewSidebar && <LivePreviewSidebar />}
 
     </div>
   );
