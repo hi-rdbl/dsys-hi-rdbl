@@ -6,34 +6,35 @@
 
 @layer base {
   body {
-    @apply bg-slate-950 text-slate-100 font-sans antialiased selection:bg-indigo-500 selection:text-white;
+    @apply bg-slate-50 text-slate-900 font-sans antialiased selection:bg-indigo-500 selection:text-white;
   }
 }
 
-/* Custom Scrollbar styling */
+/* Custom Scrollbar styling (Light Theme) */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  @apply bg-slate-900;
+  @apply bg-slate-100;
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-slate-700 rounded-full hover:bg-slate-600 transition-colors;
+  @apply bg-slate-300 rounded-full hover:bg-slate-400 transition-colors;
 }
 
-/* Custom Glassmorphism utility */
+/* Custom Glassmorphism utility - Light Mode Optimized */
 .glass-panel {
-  background: rgba(15, 23, 42, 0.65);
+  background: rgba(255, 255, 255, 0.75);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.03);
 }
 
 .glass-panel-light {
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(0, 0, 0, 0.06);
@@ -52,4 +53,125 @@
 
 .animate-fadeIn {
   animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* ========================================================================== */
+/* Dashboard Base UI Light-Mode Overrides                                     */
+/* ========================================================================== */
+
+/* Main titles and descriptions */
+main h1,
+main h1.text-white {
+  color: #0f172a !important; /* slate-900 */
+}
+main p.text-slate-400 {
+  color: #64748b !important; /* slate-500 */
+}
+
+/* Scoped modifiers panel (Left panel in editor pages) */
+.xl\:col-span-4,
+.lg\:col-span-6, 
+.lg\:col-span-5,
+.lg\:col-span-3,
+.lg\:col-span-4 {
+  color: #1e293b;
+}
+
+/* Settings block titles */
+.xl\:col-span-4 h3,
+.lg\:col-span-6 h3,
+.lg\:col-span-5 h3,
+.lg\:col-span-3 h3 {
+  color: #0f172a !important;
+}
+
+/* Cards & panels inside settings */
+.xl\:col-span-4 .glass-panel,
+.lg\:col-span-6 .glass-panel,
+.lg\:col-span-5 .glass-panel,
+.lg\:col-span-3 .glass-panel,
+.lg\:col-span-4 .glass-panel {
+  background: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02) !important;
+}
+
+/* Inner item cards */
+.xl\:col-span-4 div[class*="bg-slate-950"],
+.xl\:col-span-4 div[class*="bg-slate-900"],
+.lg\:col-span-5 div[class*="bg-slate-950"],
+.lg\:col-span-5 div[class*="bg-slate-900"] {
+  background-color: #f8fafc !important; /* slate-50 */
+  border-color: #e2e8f0 !important;
+}
+
+/* Inputs, Textareas, Selects styling overrides */
+.xl\:col-span-4 select,
+.xl\:col-span-4 select option,
+.xl\:col-span-4 input[type="text"],
+.lg\:col-span-5 select,
+.lg\:col-span-5 input[type="text"],
+.lg\:col-span-5 textarea,
+.lg\:col-span-3 select,
+.lg\:col-span-3 input[type="text"] {
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important; /* slate-300 */
+  color: #0f172a !important;
+}
+
+/* Left panel text colors */
+.xl\:col-span-4 label,
+.xl\:col-span-4 span,
+.lg\:col-span-5 label,
+.lg\:col-span-5 span,
+.lg\:col-span-3 label,
+.lg\:col-span-3 span {
+  color: #334155 !important; /* slate-700 */
+}
+
+/* Highlights */
+.xl\:col-span-4 span.text-indigo-400,
+.lg\:col-span-5 span.text-indigo-400,
+.lg\:col-span-3 span.text-indigo-400 {
+  color: #4f46e5 !important; /* indigo-600 */
+  font-weight: 700;
+}
+
+/* Range input trackers */
+.xl\:col-span-4 input[type="range"] {
+  background-color: #e2e8f0 !important;
+}
+
+/* Scoped overrides for right-side preview panels in editor tabs */
+.xl\:col-span-8 .glass-panel,
+.xl\:col-span-8 .glass-panel h3,
+.xl\:col-span-8 .glass-panel h4,
+.xl\:col-span-8 .glass-panel span,
+.xl\:col-span-8 .glass-panel p,
+.xl\:col-span-8 .glass-panel td {
+  color: #1e293b; /* slate-800 */
+}
+.xl\:col-span-8 .glass-panel h3.text-white,
+.xl\:col-span-8 .glass-panel h1,
+.xl\:col-span-8 .glass-panel h2,
+.xl\:col-span-8 .glass-panel h4.text-white {
+  color: #0f172a !important; /* slate-900 */
+}
+.xl\:col-span-8 .glass-panel p.text-slate-400,
+.xl\:col-span-8 .glass-panel span.text-slate-500,
+.xl\:col-span-8 .glass-panel span.text-slate-400 {
+  color: #64748b !important; /* slate-500 */
+}
+
+/* Easing curve simulator box & layout cards */
+.xl\:col-span-8 div[class*="bg-slate-900"],
+.xl\:col-span-8 div[class*="bg-slate-950"] {
+  background-color: #f8fafc !important; /* slate-50 */
+  border-color: #e2e8f0 !important;
+}
+.xl\:col-span-8 div[class*="border-slate-800"] {
+  border-color: #e2e8f0 !important;
+}
+.xl\:col-span-8 span[class*="text-slate-500"] {
+  color: #64748b !important;
 }
