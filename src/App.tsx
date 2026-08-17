@@ -5,6 +5,7 @@ import { ColorsTab } from './components/ColorsTab';
 import { TypographyTab } from './components/TypographyTab';
 import { LayoutTab } from './components/LayoutTab';
 import { MotionTab } from './components/MotionTab';
+import { ComponentsTab } from './components/ComponentsTab';
 import { IconsTab } from './components/IconsTab';
 import { ExportTab } from './components/ExportTab';
 import { LivePreviewSidebar } from './components/LivePreviewSidebar';
@@ -15,11 +16,12 @@ import {
   Type,
   Sliders,
   Zap,
+  Sparkles,
   Cpu,
   Download
 } from 'lucide-react';
 
-type TabId = 'dashboard' | 'colors' | 'typography' | 'spacing' | 'motion' | 'icons' | 'export';
+type TabId = 'dashboard' | 'colors' | 'typography' | 'spacing' | 'motion' | 'components' | 'icons' | 'export';
 
 const MainDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState<TabId>('dashboard');
@@ -30,6 +32,7 @@ const MainDashboard: React.FC = () => {
     { id: 'typography', name: 'Typography', icon: Type },
     { id: 'spacing', name: 'Spacing & Corners', icon: Sliders },
     { id: 'motion', name: 'Depth & Motion', icon: Zap },
+    { id: 'components', name: 'Component Playground', icon: Sparkles },
     { id: 'icons', name: 'Icon Generator', icon: Cpu },
     { id: 'export', name: 'Export Assets', icon: Download },
   ] as const;
@@ -40,11 +43,11 @@ const MainDashboard: React.FC = () => {
   return (
     <div className="flex h-screen w-screen overflow-hidden bg-slate-50 text-slate-900 font-sans select-none">
       
-      {/* Sidebar Navigation (Light Mode Theme) */}
+      {/* Sidebar Navigation (Monochrome Theme) */}
       <aside className="w-64 bg-white border-r border-slate-200 flex flex-col h-full flex-shrink-0">
         {/* Sidebar Header Logo */}
         <div className="p-6 border-b border-slate-200/80 flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center shadow-lg shadow-indigo-500/25">
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-slate-700 via-slate-800 to-slate-900 flex items-center justify-center shadow-lg shadow-slate-950/10">
             <Cpu className="w-4.5 h-4.5 text-white" />
           </div>
           <div>
@@ -68,7 +71,7 @@ const MainDashboard: React.FC = () => {
                 onClick={() => setActiveTab(item.id)}
                 className={`w-full px-4 py-3 rounded-xl text-xs font-bold flex items-center gap-3.5 transition-all ${
                   isActive
-                    ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/10'
+                    ? 'bg-slate-900 text-white shadow-lg shadow-slate-950/20'
                     : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/80'
                 }`}
               >
@@ -93,6 +96,7 @@ const MainDashboard: React.FC = () => {
           {activeTab === 'typography' && <TypographyTab />}
           {activeTab === 'spacing' && <LayoutTab />}
           {activeTab === 'motion' && <MotionTab />}
+          {activeTab === 'components' && <ComponentsTab />}
           {activeTab === 'icons' && <IconsTab />}
           {activeTab === 'export' && <ExportTab />}
         </div>
