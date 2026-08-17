@@ -12,7 +12,14 @@ import {
   Laptop,
   Smartphone,
   Wifi,
-  Battery
+  Battery,
+  Play,
+  Folder,
+  ArrowRight,
+  Trash2,
+  Bell,
+  Lock,
+  Check
 } from 'lucide-react';
 
 export const ComponentsTab: React.FC = () => {
@@ -26,6 +33,7 @@ export const ComponentsTab: React.FC = () => {
   const [btnLoading, setBtnLoading] = useState(false);
   const [textVal, setTextVal] = useState('Jane Doe');
   const [isChecked, setIsChecked] = useState(true);
+  const [radioSelection, setRadioSelection] = useState<'standard' | 'express'>('standard');
   const [progressVal, setProgressVal] = useState(72);
   const [showAlertBlock] = useState(true);
 
@@ -68,7 +76,7 @@ export const ComponentsTab: React.FC = () => {
 
   const triggerButtonLoading = () => {
     setBtnLoading(true);
-    setTimeout(() => setBtnLoading(false), 2000);
+    setTimeout(() => setBtnLoading(false), 1500);
   };
 
   return (
@@ -141,7 +149,7 @@ export const ComponentsTab: React.FC = () => {
         {/* VIEW 1: DESKTOP APP SHELL MOCKUP */}
         {deviceMode === 'desktop' && (
           <div 
-            className="w-full border shadow-2xl transition-all duration-300 flex flex-col min-h-[600px] overflow-hidden"
+            className="w-full border shadow-2xl transition-all duration-300 flex flex-col min-h-[600px] overflow-hidden animate-fadeIn"
             style={{
               backgroundColor: 'var(--color-bg)',
               color: 'var(--color-text)',
@@ -196,7 +204,7 @@ export const ComponentsTab: React.FC = () => {
               </aside>
 
               {/* Main content body */}
-              <div className="flex-1 p-6 space-y-6 overflow-y-auto max-h-[550px] relative">
+              <div className="flex-1 p-6 space-y-6 overflow-y-auto max-h-[580px] relative">
                 
                 {/* Header bar */}
                 <div className="flex items-center justify-between pb-3 border-b border-[var(--color-border)]">
@@ -217,60 +225,197 @@ export const ComponentsTab: React.FC = () => {
                 {/* Grid layout */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   
-                  {/* Buttons and controls */}
+                  {/* Left Column: Button Matrix */}
                   <div className="space-y-4">
-                    <h4 className="text-[10px] font-bold uppercase tracking-wider text-[var(--color-text-muted)]">Button Variants</h4>
+                    <h4 className="text-[10px] font-bold uppercase tracking-wider text-[var(--color-text-muted)]">Button Matrix</h4>
                     <div className="p-4 border border-[var(--color-border)] bg-[var(--color-card)]/40 rounded-[var(--radius-lg)] space-y-3">
-                      <div className="flex gap-2.5 flex-wrap">
+                      
+                      {/* Row 1: Primary Brand & Outlined */}
+                      <div className="flex gap-3 flex-wrap">
                         <button
                           onClick={triggerButtonLoading}
-                          className="px-3.5 py-1.5 text-[11px] font-bold text-white shadow-sm flex items-center gap-1"
-                          style={{ backgroundColor: 'var(--color-primary)', borderRadius: 'var(--radius-button)' }}
+                          className="px-4 py-2 text-[11px] font-bold text-white shadow-sm flex items-center justify-center gap-1.5 transition-all active:scale-95 flex-1"
+                          style={{
+                            backgroundColor: 'var(--color-primary)',
+                            borderRadius: 'var(--radius-button)',
+                          }}
                         >
-                          {btnLoading ? <Loader2 className="w-3 h-3 animate-spin" /> : 'Primary Solid'}
+                          {btnLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Play className="w-3.5 h-3.5" />}
+                          <span>Primary Solid</span>
                         </button>
+                        
                         <button
-                          className="px-3.5 py-1.5 text-[11px] font-bold border"
-                          style={{ borderColor: 'var(--color-border)', color: 'var(--color-text)', borderRadius: 'var(--radius-button)' }}
+                          className="px-4 py-2 text-[11px] font-bold border transition-all active:scale-95 flex items-center justify-center gap-1.5 flex-1"
+                          style={{
+                            borderColor: 'var(--color-border)',
+                            color: 'var(--color-text)',
+                            borderRadius: 'var(--radius-button)',
+                          }}
                         >
-                          Outline
-                        </button>
-                        <button
-                          className="px-3.5 py-1.5 text-[11px] font-bold text-white"
-                          style={{ backgroundColor: 'var(--color-error)', borderRadius: 'var(--radius-button)' }}
-                        >
-                          Danger
+                          <Settings className="w-3.5 h-3.5 text-[var(--color-text-muted)]" />
+                          <span>Outlined</span>
                         </button>
                       </div>
+
+                      {/* Row 2: Soft Tonal & Ghost */}
+                      <div className="flex gap-3 flex-wrap">
+                        <button
+                          className="px-4 py-2 text-[11px] font-bold transition-all active:scale-95 flex items-center justify-center gap-1.5 flex-1"
+                          style={{
+                            backgroundColor: 'var(--color-primary-12, rgba(99,102,241,0.12))',
+                            color: 'var(--color-primary)',
+                            borderRadius: 'var(--radius-button)',
+                          }}
+                        >
+                          <Folder className="w-3.5 h-3.5" />
+                          <span>Soft Tonal</span>
+                        </button>
+
+                        <button
+                          className="px-4 py-2 text-[11px] font-bold transition-all active:scale-95 flex items-center justify-center gap-1 text-[var(--color-primary)] flex-1"
+                          style={{ borderRadius: 'var(--radius-button)' }}
+                        >
+                          <span>Ghost Link</span>
+                          <ArrowRight className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+
+                      {/* Row 3: Danger & Circle Icon & Disabled */}
+                      <div className="flex items-center gap-3 flex-wrap">
+                        <button
+                          className="px-4 py-2 text-[11px] font-bold text-white transition-all active:scale-95 flex items-center justify-center gap-1.5 flex-1"
+                          style={{
+                            backgroundColor: 'var(--color-error)',
+                            borderRadius: 'var(--radius-button)',
+                          }}
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                          <span>Danger Action</span>
+                        </button>
+
+                        {/* IconButton */}
+                        <button
+                          className="w-9 h-9 flex items-center justify-center border relative transition-all active:scale-90"
+                          style={{
+                            borderColor: 'var(--color-border)',
+                            borderRadius: 'var(--radius-full)',
+                          }}
+                        >
+                          <Bell className="w-4 h-4 text-[var(--color-text-muted)]" />
+                          <span className="absolute top-2 right-2 w-2 h-2 bg-emerald-500 rounded-full" />
+                        </button>
+
+                        {/* Disabled state */}
+                        <button
+                          disabled
+                          className="px-4 py-2 text-[11px] font-bold border opacity-40 cursor-not-allowed flex items-center justify-center gap-1.5 bg-slate-900/10 flex-1"
+                          style={{
+                            borderColor: 'var(--color-border)',
+                            borderRadius: 'var(--radius-button)',
+                          }}
+                        >
+                          <Lock className="w-3.5 h-3.5" />
+                          <span>Locked</span>
+                        </button>
+                      </div>
+
                     </div>
 
-                    {/* Web form */}
-                    <h4 className="text-[10px] font-bold uppercase tracking-wider text-[var(--color-text-muted)]">Inputs & switches</h4>
-                    <div className="p-4 border border-[var(--color-border)] bg-[var(--color-card)]/40 rounded-[var(--radius-lg)] space-y-3">
+                    {/* Checkbox and Radio controls */}
+                    <h4 className="text-[10px] font-bold uppercase tracking-wider text-[var(--color-text-muted)]">Inputs & selection controls</h4>
+                    <div className="p-4 border border-[var(--color-border)] bg-[var(--color-card)]/40 rounded-[var(--radius-lg)] space-y-4">
+                      
+                      {/* Text field input */}
                       <div className="flex flex-col gap-1">
-                        <label className="text-[10px] font-bold">Email Notifications</label>
-                        <input
-                          type="text"
-                          value={textVal}
-                          onChange={(e) => setTextVal(e.target.value)}
-                          className="px-3 py-1.5 text-[11px] bg-transparent border outline-none"
-                          style={{ borderColor: 'var(--color-border)', borderRadius: 'var(--radius-button)' }}
-                        />
-                      </div>
-                      <div className="flex items-center justify-between text-[11px]">
-                        <span>Webhooks status</span>
-                        <div
-                          onClick={() => setIsChecked(!isChecked)}
-                          className="w-8 h-5 p-0.5 rounded-full cursor-pointer flex items-center"
-                          style={{ backgroundColor: isChecked ? 'var(--color-primary)' : 'var(--color-border)' }}
-                        >
-                          <div className={`w-4 h-4 bg-white rounded-full transition-transform ${isChecked ? 'translate-x-3' : 'translate-x-0'}`} />
+                        <label className="text-[10px] font-bold text-[var(--color-text-muted)]">Database Name</label>
+                        <div className="relative">
+                          <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 transform -translate-y-1/2 text-[var(--color-text-muted)]" />
+                          <input
+                            type="text"
+                            value={textVal}
+                            onChange={(e) => setTextVal(e.target.value)}
+                            className="w-full pl-9 pr-3 py-1.5 text-[11px] bg-transparent border outline-none"
+                            style={{ borderColor: 'var(--color-border)', borderRadius: 'var(--radius-button)' }}
+                          />
                         </div>
                       </div>
+
+                      {/* Checkbox and Radio controls */}
+                      <div className="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-[var(--color-border)]/50">
+                        {/* Checkbox */}
+                        <div 
+                          className="flex items-center gap-2 cursor-pointer"
+                          onClick={() => setIsChecked(!isChecked)}
+                        >
+                          <div 
+                            className="w-4 h-4 border flex items-center justify-center transition-all"
+                            style={{
+                              borderColor: isChecked ? 'var(--color-primary)' : 'var(--color-border)',
+                              backgroundColor: isChecked ? 'var(--color-primary)' : 'transparent',
+                              borderRadius: 'var(--radius-xs)'
+                            }}
+                          >
+                            {isChecked && <Check className="w-3 h-3 text-white stroke-[3]" />}
+                          </div>
+                          <span className="text-[11px] font-semibold">Enable Backups</span>
+                        </div>
+
+                        {/* Radio selection */}
+                        <div className="flex gap-3">
+                          <div 
+                            className="flex items-center gap-1.5 cursor-pointer"
+                            onClick={() => setRadioSelection('standard')}
+                          >
+                            <div 
+                              className="w-4 h-4 border rounded-full flex items-center justify-center transition-all"
+                              style={{
+                                borderColor: radioSelection === 'standard' ? 'var(--color-primary)' : 'var(--color-border)',
+                                backgroundColor: 'transparent'
+                              }}
+                            >
+                              {radioSelection === 'standard' && (
+                                <div className="w-2 h-2 rounded-full" style={{ backgroundColor: 'var(--color-primary)' }} />
+                              )}
+                            </div>
+                            <span className="text-[11px]">Monthly</span>
+                          </div>
+
+                          <div 
+                            className="flex items-center gap-1.5 cursor-pointer"
+                            onClick={() => setRadioSelection('express')}
+                          >
+                            <div 
+                              className="w-4 h-4 border rounded-full flex items-center justify-center transition-all"
+                              style={{
+                                borderColor: radioSelection === 'express' ? 'var(--color-primary)' : 'var(--color-border)',
+                                backgroundColor: 'transparent'
+                              }}
+                            >
+                              {radioSelection === 'express' && (
+                                <div className="w-2 h-2 rounded-full" style={{ backgroundColor: 'var(--color-primary)' }} />
+                              )}
+                            </div>
+                            <span className="text-[11px]">Yearly</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Toggle Switch */}
+                      <div className="flex items-center justify-between text-[11px] pt-2 border-t border-[var(--color-border)]/50">
+                        <span>Production sync</span>
+                        <div
+                          onClick={() => setIsChecked(!isChecked)}
+                          className="w-8 h-4.5 p-0.5 rounded-full cursor-pointer flex items-center"
+                          style={{ backgroundColor: isChecked ? 'var(--color-primary)' : 'var(--color-border)' }}
+                        >
+                          <div className={`w-3.5 h-3.5 bg-white rounded-full transition-transform ${isChecked ? 'translate-x-3.5' : 'translate-x-0'}`} />
+                        </div>
+                      </div>
+
                     </div>
                   </div>
 
-                  {/* Feedbacks and Card */}
+                  {/* Right Column: Feedback, Progress & Card */}
                   <div className="space-y-4">
                     {/* Banners */}
                     {showAlertBlock && (
@@ -359,7 +504,7 @@ export const ComponentsTab: React.FC = () => {
         {/* VIEW 2: MOBILE VIEWPORT MOCKUP */}
         {deviceMode === 'mobile' && (
           <div 
-            className="w-[320px] aspect-[9/18] border-8 border-slate-800 shadow-2xl transition-all duration-300 flex flex-col overflow-hidden relative"
+            className="w-[320px] aspect-[9/18] border-8 border-slate-800 shadow-2xl transition-all duration-300 flex flex-col overflow-hidden relative animate-fadeIn"
             style={{
               backgroundColor: 'var(--color-bg)',
               color: 'var(--color-text)',
@@ -397,47 +542,129 @@ export const ComponentsTab: React.FC = () => {
             {/* Mobile Scrollable Screen Content */}
             <div className="flex-1 p-4 space-y-5 overflow-y-auto max-h-[460px]">
               
-              {/* Button Action Card */}
-              <div className="p-4 border bg-[var(--color-card)]/50 space-y-3" style={{ borderColor: 'var(--color-border)', borderRadius: 'var(--radius-lg)' }}>
-                <span className="text-[9px] uppercase font-bold text-[var(--color-text-muted)] tracking-wider block">Quick Actions</span>
-                <button
-                  onClick={triggerButtonLoading}
-                  className="w-full py-2 text-xs font-bold text-white shadow-sm flex items-center justify-center gap-1"
-                  style={{ backgroundColor: 'var(--color-primary)', borderRadius: 'var(--radius-button)' }}
-                >
-                  {btnLoading ? <Loader2 className="w-3 h-3 animate-spin" /> : 'Primary Trigger'}
-                </button>
-                <button
-                  className="w-full py-2 text-xs font-bold border"
-                  style={{ borderColor: 'var(--color-border)', color: 'var(--color-text)', borderRadius: 'var(--radius-button)' }}
-                >
-                  Secondary Action
-                </button>
+              {/* Button Action Matrix Card */}
+              <div className="p-3 border bg-[var(--color-card)]/50 space-y-2.5" style={{ borderColor: 'var(--color-border)', borderRadius: 'var(--radius-lg)' }}>
+                <span className="text-[8px] font-bold uppercase tracking-wider text-[var(--color-text-muted)]">Quick Actions</span>
+                <div className="flex gap-2">
+                  <button
+                    onClick={triggerButtonLoading}
+                    className="flex-1 py-1.5 text-[9px] font-bold text-white shadow-sm flex items-center justify-center gap-1.5 active:scale-95 transition-all"
+                    style={{ backgroundColor: 'var(--color-primary)', borderRadius: 'var(--radius-button)' }}
+                  >
+                    {btnLoading ? <Loader2 className="w-2.5 h-2.5 animate-spin" /> : <Play className="w-2.5 h-2.5" />}
+                    <span>Primary</span>
+                  </button>
+                  <button
+                    className="flex-1 py-1.5 text-[9px] font-bold border flex items-center justify-center gap-1.5 active:scale-95 transition-all"
+                    style={{ borderColor: 'var(--color-border)', color: 'var(--color-text)', borderRadius: 'var(--radius-button)' }}
+                  >
+                    <Settings className="w-2.5 h-2.5" />
+                    <span>Outlined</span>
+                  </button>
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    className="flex-1 py-1.5 text-[9px] font-bold flex items-center justify-center gap-1 active:scale-95 transition-all"
+                    style={{
+                      backgroundColor: 'var(--color-primary-12, rgba(99,102,241,0.12))',
+                      color: 'var(--color-primary)',
+                      borderRadius: 'var(--radius-button)',
+                    }}
+                  >
+                    <Folder className="w-2.5 h-2.5" />
+                    <span>Soft Tonal</span>
+                  </button>
+                  <button
+                    className="flex-1 py-1.5 text-[9px] font-bold flex items-center justify-center gap-1 bg-red-600 active:scale-95 transition-all"
+                    style={{ backgroundColor: 'var(--color-error)', color: 'white', borderRadius: 'var(--radius-button)' }}
+                  >
+                    <Trash2 className="w-2.5 h-2.5" />
+                    <span>Danger</span>
+                  </button>
+                </div>
               </div>
 
-              {/* Form card */}
-              <div className="p-4 border bg-[var(--color-card)]/50 space-y-3.5" style={{ borderColor: 'var(--color-border)', borderRadius: 'var(--radius-lg)' }}>
-                <span className="text-[9px] uppercase font-bold text-[var(--color-text-muted)] tracking-wider block">Settings</span>
+              {/* Form & Selection controls */}
+              <div className="p-3 border bg-[var(--color-card)]/50 space-y-3" style={{ borderColor: 'var(--color-border)', borderRadius: 'var(--radius-lg)' }}>
+                <span className="text-[8px] font-bold uppercase tracking-wider text-[var(--color-text-muted)]">Configuration</span>
                 
                 <div className="flex flex-col gap-1">
-                  <label className="text-[10px] font-bold">Username</label>
+                  <label className="text-[9px] font-bold">App Name</label>
                   <input
                     type="text"
                     value={textVal}
                     onChange={(e) => setTextVal(e.target.value)}
-                    className="px-2.5 py-1.5 text-xs bg-transparent border outline-none"
+                    className="px-2.5 py-1.5 text-[10px] bg-transparent border outline-none"
                     style={{ borderColor: 'var(--color-border)', borderRadius: 'var(--radius-button)' }}
                   />
                 </div>
 
-                <div className="flex items-center justify-between text-xs pt-1">
-                  <span className="text-[10px] text-[var(--color-text)]">Auto Sync</span>
+                {/* Checkbox and Radio controls */}
+                <div className="space-y-2 pt-2 border-t border-[var(--color-border)]/50">
+                  <div 
+                    className="flex items-center gap-2 cursor-pointer"
+                    onClick={() => setIsChecked(!isChecked)}
+                  >
+                    <div 
+                      className="w-4 h-4 border flex items-center justify-center transition-all flex-shrink-0"
+                      style={{
+                        borderColor: isChecked ? 'var(--color-primary)' : 'var(--color-border)',
+                        backgroundColor: isChecked ? 'var(--color-primary)' : 'transparent',
+                        borderRadius: 'var(--radius-xs)'
+                      }}
+                    >
+                      {isChecked && <Check className="w-3 h-3 text-white stroke-[3]" />}
+                    </div>
+                    <span className="text-[10px] font-medium">Automatic Backups</span>
+                  </div>
+
+                  <div className="flex gap-3.5 pt-1">
+                    <div 
+                      className="flex items-center gap-1.5 cursor-pointer"
+                      onClick={() => setRadioSelection('standard')}
+                    >
+                      <div 
+                        className="w-3.5 h-3.5 border rounded-full flex items-center justify-center transition-all flex-shrink-0"
+                        style={{
+                          borderColor: radioSelection === 'standard' ? 'var(--color-primary)' : 'var(--color-border)',
+                          backgroundColor: 'transparent'
+                        }}
+                      >
+                        {radioSelection === 'standard' && (
+                          <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: 'var(--color-primary)' }} />
+                        )}
+                      </div>
+                      <span className="text-[10px]">Monthly</span>
+                    </div>
+
+                    <div 
+                      className="flex items-center gap-1.5 cursor-pointer"
+                      onClick={() => setRadioSelection('express')}
+                    >
+                      <div 
+                        className="w-3.5 h-3.5 border rounded-full flex items-center justify-center transition-all flex-shrink-0"
+                        style={{
+                          borderColor: radioSelection === 'express' ? 'var(--color-primary)' : 'var(--color-border)',
+                          backgroundColor: 'transparent'
+                        }}
+                      >
+                        {radioSelection === 'express' && (
+                          <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: 'var(--color-primary)' }} />
+                        )}
+                      </div>
+                      <span className="text-[10px]">Yearly</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between text-[10px] pt-2 border-t border-[var(--color-border)]/50">
+                  <span>Auto-deploy to Prod</span>
                   <div
                     onClick={() => setIsChecked(!isChecked)}
-                    className="w-8 h-5 p-0.5 rounded-full cursor-pointer flex items-center"
+                    className="w-7 h-4.5 p-0.5 rounded-full cursor-pointer flex items-center"
                     style={{ backgroundColor: isChecked ? 'var(--color-primary)' : 'var(--color-border)' }}
                   >
-                    <div className={`w-4 h-4 bg-white rounded-full transition-transform ${isChecked ? 'translate-x-3' : 'translate-x-0'}`} />
+                    <div className={`w-3.5 h-3.5 bg-white rounded-full transition-transform ${isChecked ? 'translate-x-3.5' : 'translate-x-0'}`} />
                   </div>
                 </div>
               </div>
