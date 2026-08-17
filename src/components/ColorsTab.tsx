@@ -1,7 +1,7 @@
 import React from 'react';
 import { useDesignSystem } from '../context/DesignSystemContext';
 import { getContrastRatio, evaluateContrast } from '../utils/contrast';
-import { ShieldCheck, ShieldAlert, Palette } from 'lucide-react';
+import { Palette } from 'lucide-react';
 
 export const ColorsTab: React.FC = () => {
   const { tokens, colorMode, updateColorToken } = useDesignSystem();
@@ -132,28 +132,74 @@ export const ColorsTab: React.FC = () => {
                   </div>
 
                   {/* Contrast Auditor Footer */}
-                  <div className="mt-4 pt-3 border-t border-slate-800 flex items-center justify-between text-xs">
-                    <div className="flex flex-col">
-                      <span className="text-[10px] text-slate-500 font-medium leading-none">{contrastLabel}</span>
-                      <span className="font-bold text-slate-300 mt-1">{ratio}:1 Ratio</span>
+                  <div className="mt-4 pt-4 border-t border-slate-800 space-y-3">
+                    <div className="flex justify-between items-center text-xs">
+                      <div className="flex flex-col">
+                        <span className="text-[10px] text-slate-500 font-medium leading-none">{contrastLabel}</span>
+                        <span className="font-bold text-slate-300 mt-1">{ratio}:1 Ratio</span>
+                      </div>
                     </div>
-                    
-                    <div className="flex gap-1.5">
-                      {contrastEval.aaNormal ? (
-                        <span className="text-[9px] px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-bold uppercase flex items-center gap-1">
-                          <ShieldCheck className="w-3 h-3" /> AA PASS
-                        </span>
-                      ) : (
-                        <span className="text-[9px] px-2 py-0.5 rounded-full bg-rose-500/10 border border-rose-500/20 text-rose-400 font-bold uppercase flex items-center gap-1">
-                          <ShieldAlert className="w-3 h-3" /> AA FAIL
-                        </span>
-                      )}
 
-                      {contrastEval.aaaNormal && (
-                        <span className="text-[9px] px-2 py-0.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 font-bold uppercase">
-                          AAA
-                        </span>
-                      )}
+                    {/* Visual Contrast Gauge */}
+                    <div className="w-full h-1.5 bg-slate-900 rounded-full relative my-2 flex items-center">
+                      <div className="absolute inset-0 bg-gradient-to-r from-rose-500 via-amber-500 via-emerald-500 to-indigo-500 rounded-full opacity-20" />
+                      <div className="absolute left-[10%] w-0.5 h-2 bg-slate-700" title="3.0 - AA Large Text" />
+                      <div className="absolute left-[17.5%] w-0.5 h-2 bg-slate-700" title="4.5 - AA Normal Text" />
+                      <div className="absolute left-[30%] w-0.5 h-2 bg-slate-700" title="7.0 - AAA Normal Text" />
+                      <div 
+                        className="absolute w-2.5 h-2.5 rounded-full bg-white border border-slate-900 shadow-md transition-all duration-300"
+                        style={{ left: `calc(${Math.min(((ratio - 1) / 20) * 100, 100)}% - 5px)` }}
+                      />
+                    </div>
+
+                    {/* WCAG Compliance Matrix with Tooltips */}
+                    <div className="grid grid-cols-3 gap-1.5 pt-1 text-[10px] select-none">
+                      
+                      {/* AA Normal (4.5:1) */}
+                      <div className="group relative flex flex-col items-center justify-center p-1.5 rounded bg-slate-950/40 border border-slate-800/40 cursor-help">
+                        <span className="text-slate-500 font-bold text-[9px] mb-0.5">Body AA</span>
+                        {contrastEval.aaNormal ? (
+                          <span className="text-emerald-400 font-bold">Pass</span>
+                        ) : (
+                          <span className="text-rose-400 font-bold">Fail</span>
+                        )}
+                        <div className="pointer-events-none absolute bottom-full left-1/2 z-50 mb-2 w-56 -translate-x-1/2 rounded-xl bg-slate-950 border border-slate-800 p-3 text-[10px] leading-relaxed text-slate-300 opacity-0 shadow-2xl transition-all duration-200 group-hover:opacity-100">
+                          <p className="font-bold text-white mb-1">Body Text AA Compliance</p>
+                          Requires a contrast ratio of at least <strong className="text-emerald-400 font-mono">4.5:1</strong> for normal body text (under 18pt/24px). Fails indicate small text is hard to read.
+                          <div className="absolute top-full left-1/2 h-2 w-2 -translate-x-1/2 -translate-y-1 rotate-45 border-r border-b border-slate-800 bg-slate-950" />
+                        </div>
+                      </div>
+
+                      {/* AA Large (3.0:1) */}
+                      <div className="group relative flex flex-col items-center justify-center p-1.5 rounded bg-slate-950/40 border border-slate-800/40 cursor-help">
+                        <span className="text-slate-500 font-bold text-[9px] mb-0.5">Large AA</span>
+                        {contrastEval.aaLarge ? (
+                          <span className="text-emerald-400 font-bold">Pass</span>
+                        ) : (
+                          <span className="text-rose-400 font-bold">Fail</span>
+                        )}
+                        <div className="pointer-events-none absolute bottom-full left-1/2 z-50 mb-2 w-56 -translate-x-1/2 rounded-xl bg-slate-950 border border-slate-800 p-3 text-[10px] leading-relaxed text-slate-300 opacity-0 shadow-2xl transition-all duration-200 group-hover:opacity-100">
+                          <p className="font-bold text-white mb-1">Large Text AA Compliance</p>
+                          Requires a contrast ratio of at least <strong className="text-emerald-400 font-mono">3.0:1</strong> for large headings (18pt/24px+) or UI components/borders/icons.
+                          <div className="absolute top-full left-1/2 h-2 w-2 -translate-x-1/2 -translate-y-1 rotate-45 border-r border-b border-slate-800 bg-slate-950" />
+                        </div>
+                      </div>
+
+                      {/* AAA Gold (7.0:1) */}
+                      <div className="group relative flex flex-col items-center justify-center p-1.5 rounded bg-slate-950/40 border border-slate-800/40 cursor-help">
+                        <span className="text-slate-500 font-bold text-[9px] mb-0.5">Text AAA</span>
+                        {contrastEval.aaaNormal ? (
+                          <span className="text-indigo-400 font-bold">Pass</span>
+                        ) : (
+                          <span className="text-slate-500 font-semibold">Fail</span>
+                        )}
+                        <div className="pointer-events-none absolute bottom-full left-1/2 z-50 mb-2 w-56 -translate-x-1/2 rounded-xl bg-slate-950 border border-slate-800 p-3 text-[10px] leading-relaxed text-slate-300 opacity-0 shadow-2xl transition-all duration-200 group-hover:opacity-100">
+                          <p className="font-bold text-white mb-1">Text AAA Compliance</p>
+                          Requires a contrast ratio of at least <strong className="text-indigo-400 font-mono">7.0:1</strong>. This is the gold standard for maximum text readability and visual comfort.
+                          <div className="absolute top-full left-1/2 h-2 w-2 -translate-x-1/2 -translate-y-1 rotate-45 border-r border-b border-slate-800 bg-slate-950" />
+                        </div>
+                      </div>
+
                     </div>
                   </div>
                 </div>
