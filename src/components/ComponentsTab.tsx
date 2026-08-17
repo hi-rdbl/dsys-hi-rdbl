@@ -38,7 +38,8 @@ export const ComponentsTab: React.FC = () => {
 
     // Apply colors
     Object.entries(tokens.colors).forEach(([key, val]) => {
-      el.style.setProperty(`--color-${key}`, val[colorMode]);
+      const kebabKey = key.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase();
+      el.style.setProperty(`--color-${kebabKey}`, val[colorMode]);
     });
 
     // Apply typography
