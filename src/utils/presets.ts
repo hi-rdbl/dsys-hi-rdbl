@@ -47,6 +47,7 @@ export const presets: DesignSystemPreset[] = [
         xl: '12px',
         xxl: '16px',
         full: '9999px',
+        button: 'var(--radius-md)',
       },
       shadows: {
         none: 'none',
@@ -119,6 +120,7 @@ export const presets: DesignSystemPreset[] = [
         xl: '24px',
         xxl: '28px',
         full: '9999px',
+        button: 'var(--radius-full)',
       },
       shadows: {
         none: 'none',
@@ -191,6 +193,7 @@ export const presets: DesignSystemPreset[] = [
         xl: '4px',
         xxl: '6px',
         full: '9999px',
+        button: 'var(--radius-none)',
       },
       shadows: {
         none: 'none',
@@ -263,6 +266,7 @@ export const presets: DesignSystemPreset[] = [
         xl: '16px',
         xxl: '24px',
         full: '9999px',
+        button: 'var(--radius-none)',
       },
       shadows: {
         none: 'none',
@@ -335,6 +339,7 @@ export const presets: DesignSystemPreset[] = [
         xl: '20px',
         xxl: '32px',
         full: '9999px',
+        button: 'var(--radius-md)',
       },
       shadows: {
         none: 'none',

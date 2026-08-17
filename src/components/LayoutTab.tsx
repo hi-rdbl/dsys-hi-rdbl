@@ -58,7 +58,7 @@ export const LayoutTab: React.FC = () => {
               </h3>
               <div className="grid grid-cols-2 gap-3">
                 {Object.entries(tokens.radius).map(([key, val]) => {
-                  if (key === 'none' || key === 'full') return null;
+                  if (key === 'none' || key === 'full' || key === 'button') return null;
                   const radiusKey = key as keyof typeof tokens.radius;
                   return (
                     <div key={key} className="flex flex-col gap-1">
@@ -73,6 +73,30 @@ export const LayoutTab: React.FC = () => {
                   );
                 })}
               </div>
+            </div>
+
+            {/* Button Radius Selector */}
+            <div className="space-y-3 pt-4 border-t border-slate-800/80">
+              <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+                Button Shape Style
+              </h3>
+              <select
+                value={tokens.radius.button}
+                onChange={(e) => updateRadius('button', e.target.value)}
+                className="w-full px-3 py-2.5 text-xs bg-slate-950/60 border border-slate-800 rounded-lg outline-none text-slate-200 focus:border-indigo-500"
+              >
+                <option value="0px">Square (0px)</option>
+                <option value="var(--radius-xs)">Extra Small (xs)</option>
+                <option value="var(--radius-sm)">Small (sm)</option>
+                <option value="var(--radius-md)">Medium (md)</option>
+                <option value="var(--radius-lg)">Large (lg)</option>
+                <option value="var(--radius-xl)">Extra Large (xl)</option>
+                <option value="var(--radius-xxl)">Double Extra Large (xxl)</option>
+                <option value="var(--radius-full)">Pill / Capsule (full)</option>
+              </select>
+              <span className="text-[10px] text-slate-500 block leading-normal">
+                Sets the semantic <code>--radius-button</code> token used across all button presets.
+              </span>
             </div>
 
             {/* Icon Token Modifiers */}

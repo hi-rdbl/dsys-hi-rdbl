@@ -154,6 +154,7 @@ export const generateCssVariables = (tokens: DesignTokens): string => {
   --radius-xl: ${tokens.radius.xl};
   --radius-xxl: ${tokens.radius.xxl};
   --radius-full: ${tokens.radius.full};
+  --radius-button: ${tokens.radius.button};
 
   /* Shadows */
   --shadow-none: ${tokens.shadows.none};
@@ -271,6 +272,7 @@ module.exports = {
         xl: 'var(--radius-xl)',
         xxl: 'var(--radius-xxl)',
         full: 'var(--radius-full)',
+        button: 'var(--radius-button)',
       },
       boxShadow: {
         sm: 'var(--shadow-sm)',

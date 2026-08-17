@@ -104,7 +104,7 @@ export const ComponentsTab: React.FC = () => {
                 className="px-4 py-2 text-xs font-bold text-white shadow-[var(--shadow-sm)] active:scale-95 transition-all flex items-center gap-1.5"
                 style={{
                   backgroundColor: 'var(--color-primary)',
-                  borderRadius: 'var(--radius-md)',
+                  borderRadius: 'var(--radius-button)',
                   transitionDuration: 'var(--motion-duration-fast)',
                 }}
                 onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-primary-hover)'}
@@ -119,7 +119,7 @@ export const ComponentsTab: React.FC = () => {
                 style={{
                   borderColor: 'var(--color-border)',
                   color: 'var(--color-text)',
-                  borderRadius: 'var(--radius-md)',
+                  borderRadius: 'var(--radius-button)',
                 }}
                 onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.04)'}
                 onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
@@ -133,7 +133,7 @@ export const ComponentsTab: React.FC = () => {
                 style={{
                   color: 'var(--color-accent)',
                   backgroundColor: 'rgba(192, 132, 252, 0.15)',
-                  borderRadius: 'var(--radius-md)',
+                  borderRadius: 'var(--radius-button)',
                 }}
               >
                 Soft Accent
@@ -146,7 +146,7 @@ export const ComponentsTab: React.FC = () => {
                 className="px-4 py-2 text-xs font-bold text-white shadow-[var(--shadow-sm)]"
                 style={{
                   backgroundColor: 'var(--color-error)',
-                  borderRadius: 'var(--radius-md)',
+                  borderRadius: 'var(--radius-button)',
                 }}
               >
                 Danger
@@ -156,7 +156,7 @@ export const ComponentsTab: React.FC = () => {
               <button
                 className="px-4 py-2 text-xs font-bold text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors"
                 style={{
-                  borderRadius: 'var(--radius-md)',
+                  borderRadius: 'var(--radius-button)',
                 }}
               >
                 Ghost
@@ -168,7 +168,7 @@ export const ComponentsTab: React.FC = () => {
                 className="px-4 py-2 text-xs font-bold opacity-30 text-white cursor-not-allowed"
                 style={{
                   backgroundColor: 'var(--color-secondary)',
-                  borderRadius: 'var(--radius-md)',
+                  borderRadius: 'var(--radius-button)',
                 }}
               >
                 Disabled

@@ -45,6 +45,7 @@ export interface RadiusToken {
   xl: string;
   xxl: string;
   full: string;
+  button: string;
 }
 
 export interface ShadowToken {

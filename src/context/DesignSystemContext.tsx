@@ -200,6 +200,7 @@ export const DesignSystemProvider: React.FC<{ children: React.ReactNode }> = ({ 
               xl: radiusObj.xl?.$value || '12px',
               xxl: radiusObj.xxl?.$value || '16px',
               full: radiusObj.full?.$value || '9999px',
+              button: radiusObj.button?.$value || 'var(--radius-md)',
             },
             shadows: {
               none: shadowObj.none?.$value || 'none',
