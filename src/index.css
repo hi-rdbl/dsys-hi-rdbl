@@ -137,15 +137,15 @@ main label[class*="border-slate-800"] {
 }
 
 /* Maintain dark code blocks in Export tab & Code Exporter */
-main .bg-slate-950,
-main .bg-slate-950 *,
+main .font-mono.bg-slate-950,
+main .font-mono.bg-slate-950 *,
 main pre,
 main code {
   background-color: #020617 !important; /* deep dark background */
   color: #cbd5e1 !important; /* light slate text */
   border-color: #0f172a !important;
 }
-main .bg-slate-950 span,
+main .font-mono.bg-slate-950 span,
 main pre span {
   color: inherit !important;
 }
