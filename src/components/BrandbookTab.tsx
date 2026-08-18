@@ -12,12 +12,13 @@ import {
   ShieldCheck, 
   Check, 
   Copy,
-  ChevronRight
+  ChevronRight,
+  Layers
 } from 'lucide-react';
 
 export const BrandbookTab: React.FC = () => {
   const { tokens, colorMode, toggleColorMode } = useDesignSystem();
-  const [activeSection, setActiveSection] = useState<'overview' | 'colors' | 'typography' | 'spacing' | 'corners' | 'motion' | 'elements'>('overview');
+  const [activeSection, setActiveSection] = useState<'overview' | 'colors' | 'typography' | 'spacing' | 'corners' | 'motion' | 'elements' | 'm3-mapping'>('overview');
   const [copiedToken, setCopiedToken] = useState<string | null>(null);
 
   const baseUnit = tokens.spacing.baseUnit;
@@ -46,6 +47,7 @@ export const BrandbookTab: React.FC = () => {
     { id: 'corners', name: '05. Depth & Corners', icon: Minimize2 },
     { id: 'motion', name: '06. Motion Curves', icon: Zap },
     { id: 'elements', name: '07. Active Elements', icon: Sparkles },
+    { id: 'm3-mapping', name: '08. Material 3 Mapping', icon: Layers },
   ] as const;
 
   return (
@@ -535,6 +537,120 @@ export const BrandbookTab: React.FC = () => {
                   </div>
                 </div>
 
+              </div>
+            </div>
+          </section>
+
+          {/* Section 8: Material 3 Mapping */}
+          <section id="brandbook-sec-m3-mapping" className="space-y-4 scroll-mt-6">
+            <h3 className="text-sm font-bold text-indigo-400 uppercase tracking-wider flex items-center gap-2">
+              <Layers className="w-4 h-4" />
+              08. Material Design 3 (M3) Token Mapping
+            </h3>
+
+            <div className="glass-panel p-6 rounded-2xl border border-slate-800/80 space-y-4">
+              <div>
+                <span className="px-2.5 py-0.5 rounded bg-indigo-500/10 text-indigo-400 text-[9px] font-bold uppercase tracking-wider border border-indigo-500/20">
+                  Google I/O 2026: Make Material Your Own
+                </span>
+                <p className="text-xs text-slate-400 leading-relaxed mt-2">
+                  This mapping matrix illustrates how to map standard Android / Web Material 3 system tokens to your bespoke Aura Design System variables. Use this table as a developer configuration sheet to skin standard M3 components.
+                </p>
+              </div>
+
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs border-collapse">
+                  <thead>
+                    <tr className="border-b border-slate-800 text-slate-500 text-[10px] uppercase font-bold tracking-wider">
+                      <th className="py-2.5 pr-4">M3 System Token</th>
+                      <th className="py-2.5 px-4">Aura Variable</th>
+                      <th className="py-2.5 px-4">Active Value ({colorMode})</th>
+                      <th className="py-2.5 pl-4">Description</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-900 text-slate-300">
+                    {/* Colors */}
+                    <tr className="hover:bg-slate-900/20 transition-colors">
+                      <td className="py-2.5 pr-4 font-mono text-indigo-400 text-[10px]">md.sys.color.primary</td>
+                      <td className="py-2.5 px-4 font-mono text-slate-400">var(--color-primary)</td>
+                      <td className="py-2.5 px-4 flex items-center gap-2">
+                        <div className="w-3.5 h-3.5 rounded border border-black/20" style={{ backgroundColor: tokens.colors.primary[colorMode] }} />
+                        <span className="font-mono text-[10px] uppercase">{tokens.colors.primary[colorMode]}</span>
+                      </td>
+                      <td className="py-2.5 pl-4 text-slate-400 text-[11px]">Primary action accent fill.</td>
+                    </tr>
+                    <tr className="hover:bg-slate-900/20 transition-colors">
+                      <td className="py-2.5 pr-4 font-mono text-indigo-400 text-[10px]">md.sys.color.secondary</td>
+                      <td className="py-2.5 px-4 font-mono text-slate-400">var(--color-secondary)</td>
+                      <td className="py-2.5 px-4 flex items-center gap-2">
+                        <div className="w-3.5 h-3.5 rounded border border-black/20" style={{ backgroundColor: tokens.colors.secondary[colorMode] }} />
+                        <span className="font-mono text-[10px] uppercase">{tokens.colors.secondary[colorMode]}</span>
+                      </td>
+                      <td className="py-2.5 pl-4 text-slate-400 text-[11px]">Secondary tonal action color.</td>
+                    </tr>
+                    <tr className="hover:bg-slate-900/20 transition-colors">
+                      <td className="py-2.5 pr-4 font-mono text-indigo-400 text-[10px]">md.sys.color.background</td>
+                      <td className="py-2.5 px-4 font-mono text-slate-400">var(--color-bg)</td>
+                      <td className="py-2.5 px-4 flex items-center gap-2">
+                        <div className="w-3.5 h-3.5 rounded border border-black/20" style={{ backgroundColor: tokens.colors.bg[colorMode] }} />
+                        <span className="font-mono text-[10px] uppercase">{tokens.colors.bg[colorMode]}</span>
+                      </td>
+                      <td className="py-2.5 pl-4 text-slate-400 text-[11px]">Underlying canvas background.</td>
+                    </tr>
+                    <tr className="hover:bg-slate-900/20 transition-colors">
+                      <td className="py-2.5 pr-4 font-mono text-indigo-400 text-[10px]">md.sys.color.surface-container</td>
+                      <td className="py-2.5 px-4 font-mono text-slate-400">var(--color-card)</td>
+                      <td className="py-2.5 px-4 flex items-center gap-2">
+                        <div className="w-3.5 h-3.5 rounded border border-black/20" style={{ backgroundColor: tokens.colors.card[colorMode] }} />
+                        <span className="font-mono text-[10px] uppercase">{tokens.colors.card[colorMode]}</span>
+                      </td>
+                      <td className="py-2.5 pl-4 text-slate-400 text-[11px]">Elevated cards & sheets.</td>
+                    </tr>
+                    <tr className="hover:bg-slate-900/20 transition-colors">
+                      <td className="py-2.5 pr-4 font-mono text-indigo-400 text-[10px]">md.sys.color.outline</td>
+                      <td className="py-2.5 px-4 font-mono text-slate-400">var(--color-border)</td>
+                      <td className="py-2.5 px-4 flex items-center gap-2">
+                        <div className="w-3.5 h-3.5 rounded border border-black/20" style={{ backgroundColor: tokens.colors.border[colorMode] }} />
+                        <span className="font-mono text-[10px] uppercase">{tokens.colors.border[colorMode]}</span>
+                      </td>
+                      <td className="py-2.5 pl-4 text-slate-400 text-[11px]">Borders, outlines, and dividers.</td>
+                    </tr>
+
+                    {/* Shapes */}
+                    <tr className="hover:bg-slate-900/20 transition-colors">
+                      <td className="py-2.5 pr-4 font-mono text-indigo-400 text-[10px]">md.sys.shape.corner.small</td>
+                      <td className="py-2.5 px-4 font-mono text-slate-400">var(--radius-sm)</td>
+                      <td className="py-2.5 px-4 font-mono text-slate-300 text-[11px]">{tokens.radius.sm}</td>
+                      <td className="py-2.5 pl-4 text-slate-400 text-[11px]">Badges, tooltips, checkboxes.</td>
+                    </tr>
+                    <tr className="hover:bg-slate-900/20 transition-colors">
+                      <td className="py-2.5 pr-4 font-mono text-indigo-400 text-[10px]">md.sys.shape.corner.medium</td>
+                      <td className="py-2.5 px-4 font-mono text-slate-400">var(--radius-md)</td>
+                      <td className="py-2.5 px-4 font-mono text-slate-300 text-[11px]">{tokens.radius.md}</td>
+                      <td className="py-2.5 pl-4 text-slate-400 text-[11px]">Inputs, button elements, cards.</td>
+                    </tr>
+                    <tr className="hover:bg-slate-900/20 transition-colors">
+                      <td className="py-2.5 pr-4 font-mono text-indigo-400 text-[10px]">md.sys.shape.corner.large</td>
+                      <td className="py-2.5 px-4 font-mono text-slate-400">var(--radius-lg)</td>
+                      <td className="py-2.5 px-4 font-mono text-slate-300 text-[11px]">{tokens.radius.lg}</td>
+                      <td className="py-2.5 pl-4 text-slate-400 text-[11px]">Modals, sheets, dialog containers.</td>
+                    </tr>
+
+                    {/* Motion */}
+                    <tr className="hover:bg-slate-900/20 transition-colors">
+                      <td className="py-2.5 pr-4 font-mono text-indigo-400 text-[10px]">md.sys.motion.duration.short</td>
+                      <td className="py-2.5 px-4 font-mono text-slate-400">var(--motion-duration-fast)</td>
+                      <td className="py-2.5 px-4 font-mono text-slate-300 text-[11px]">{tokens.motion.durationFast}</td>
+                      <td className="py-2.5 pl-4 text-slate-400 text-[11px]">Fast toggles and click scales.</td>
+                    </tr>
+                    <tr className="hover:bg-slate-900/20 transition-colors">
+                      <td className="py-2.5 pr-4 font-mono text-indigo-400 text-[10px]">md.sys.motion.easing.emphasized</td>
+                      <td className="py-2.5 px-4 font-mono text-slate-400">var(--motion-ease-default)</td>
+                      <td className="py-2.5 px-4 font-mono text-slate-300 text-[10px] max-w-[120px] truncate" title={tokens.motion.easeDefault}>{tokens.motion.easeDefault}</td>
+                      <td className="py-2.5 pl-4 text-slate-400 text-[11px]">Default layout ease timing curve.</td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
           </section>
