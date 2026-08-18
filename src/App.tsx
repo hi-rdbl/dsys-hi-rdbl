@@ -8,6 +8,7 @@ import { MotionTab } from './components/MotionTab';
 import { ComponentsTab } from './components/ComponentsTab';
 import { IconsTab } from './components/IconsTab';
 import { ExportTab } from './components/ExportTab';
+import { BrandbookTab } from './components/BrandbookTab';
 import { LivePreviewSidebar } from './components/LivePreviewSidebar';
 
 import {
@@ -27,7 +28,7 @@ import {
   Check
 } from 'lucide-react';
 
-type TabId = 'dashboard' | 'colors' | 'typography' | 'spacing' | 'motion' | 'components' | 'icons' | 'export';
+type TabId = 'dashboard' | 'colors' | 'typography' | 'spacing' | 'motion' | 'components' | 'icons' | 'export' | 'brandbook';
 
 const MainDashboard: React.FC = () => {
   const { tokens } = useDesignSystem();
@@ -44,6 +45,7 @@ const MainDashboard: React.FC = () => {
     { id: 'components', name: 'Component Playground', icon: Sparkles },
     { id: 'icons', name: 'Icon Generator', icon: Cpu },
     { id: 'export', name: 'Export Assets', icon: Download },
+    { id: 'brandbook', name: 'Brandbook Guidelines', icon: BookOpen },
   ] as const;
 
   // Determine if we should show the 3rd column playground preview panel
@@ -230,15 +232,16 @@ const MainDashboard: React.FC = () => {
                     
                     {/* View Button & Copy Link Link */}
                     <div className="w-full space-y-2">
-                      <a
-                        href="/walkthrough.md"
-                        target="_blank"
-                        rel="noreferrer"
+                      <button
+                        onClick={() => {
+                          setActiveTab('brandbook');
+                          setShowDownloadDropdown(false);
+                        }}
                         className="py-1.5 rounded-full bg-slate-950 hover:bg-slate-900 text-[9px] font-extrabold tracking-wider text-white transition-all active:scale-95 w-full flex items-center justify-center gap-1 uppercase"
                       >
                         <Eye className="w-3 h-3" />
                         <span>View</span>
-                      </a>
+                      </button>
                       <button
                         onClick={handleCopyGuidebookLink}
                         className="text-[9px] font-extrabold tracking-wider text-slate-500 hover:text-slate-800 transition-colors w-full uppercase flex items-center justify-center gap-1"
@@ -275,6 +278,7 @@ const MainDashboard: React.FC = () => {
             {activeTab === 'components' && <ComponentsTab />}
             {activeTab === 'icons' && <IconsTab />}
             {activeTab === 'export' && <ExportTab />}
+            {activeTab === 'brandbook' && <BrandbookTab />}
           </div>
         </div>
 
