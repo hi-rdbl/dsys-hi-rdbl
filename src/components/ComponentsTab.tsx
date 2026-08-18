@@ -153,7 +153,7 @@ export const ComponentsTab: React.FC = () => {
         {/* VIEW 1: FULL DESKTOP MOCKUP */}
         {deviceMode === 'desktop' && (
           <div 
-            className="w-full border shadow-2xl transition-all duration-300 flex flex-col min-h-[700px] overflow-hidden"
+            className="w-full border shadow-2xl transition-all duration-300 flex flex-col min-h-[700px] overflow-hidden relative"
             style={{
               backgroundColor: 'var(--color-bg)',
               color: 'var(--color-text)',
@@ -162,8 +162,12 @@ export const ComponentsTab: React.FC = () => {
               fontFamily: 'var(--font-sans)',
             }}
           >
+            {/* Mesh Gradient Ambient Glows (Highly responsive to Primary and Accent colors) */}
+            <div className="absolute top-[-15%] left-[-10%] w-[450px] h-[450px] rounded-full bg-[var(--color-primary)]/10 blur-[130px] pointer-events-none" />
+            <div className="absolute bottom-[-10%] right-[-10%] w-[450px] h-[450px] rounded-full bg-[var(--color-accent)]/10 blur-[130px] pointer-events-none" />
+
             {/* Browser Header Bar */}
-            <div className="px-4 py-3 bg-[var(--color-card)]/40 border-b border-[var(--color-border)] flex items-center justify-between flex-shrink-0">
+            <div className="px-4 py-3 bg-[var(--color-card)]/40 backdrop-blur-md border-b border-[var(--color-border)] flex items-center justify-between flex-shrink-0 z-10">
               <div className="flex gap-1.5 flex-shrink-0">
                 <span className="w-3 h-3 rounded-full bg-rose-500/80" />
                 <span className="w-3 h-3 rounded-full bg-amber-500/80" />
@@ -176,9 +180,9 @@ export const ComponentsTab: React.FC = () => {
             </div>
 
             {/* Desktop App Layout */}
-            <div className="flex flex-1 overflow-hidden h-full min-h-[600px]">
+            <div className="flex flex-1 overflow-hidden h-full min-h-[600px] z-10">
               {/* Sidebar Navigation */}
-              <aside className="w-52 bg-[var(--color-card)]/60 border-r border-[var(--color-border)] p-4 flex flex-col justify-between hidden sm:flex">
+              <aside className="w-52 bg-[var(--color-card)]/50 backdrop-blur-md border-r border-[var(--color-border)] p-4 flex flex-col justify-between hidden sm:flex">
                 <div className="space-y-6">
                   {/* Brand */}
                   <div className="flex items-center gap-2">
@@ -217,7 +221,7 @@ export const ComponentsTab: React.FC = () => {
                   </div>
                   <div className="flex items-center gap-3">
                     {/* Notify circular */}
-                    <button className="p-1.5 border border-[var(--color-border)] rounded-full hover:bg-[var(--color-card)]/50 relative">
+                    <button className="p-1.5 border border-[var(--color-border)] rounded-full bg-[var(--color-card)]/40 hover:bg-[var(--color-card)]/80 relative">
                       <Bell className="w-3.5 h-3.5 text-[var(--color-text-muted)]" />
                       <span className="absolute top-1 right-1 w-1.5 h-1.5 bg-emerald-500 rounded-full" />
                     </button>
@@ -230,7 +234,7 @@ export const ComponentsTab: React.FC = () => {
                 {/* WCAG Alert Banners */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div 
-                    className="p-3 border flex items-start gap-2.5 bg-[var(--color-card)]"
+                    className="p-3 border flex items-start gap-2.5 bg-[var(--color-card)]/60 backdrop-blur-md shadow-[var(--shadow-sm)]"
                     style={{
                       borderColor: 'var(--color-border)',
                       borderRadius: 'var(--radius-lg)',
@@ -245,7 +249,7 @@ export const ComponentsTab: React.FC = () => {
                   </div>
 
                   <div 
-                    className="p-3 border flex items-start gap-2.5 bg-[var(--color-card)]"
+                    className="p-3 border flex items-start gap-2.5 bg-[var(--color-card)]/60 backdrop-blur-md shadow-[var(--shadow-sm)]"
                     style={{
                       borderColor: 'var(--color-border)',
                       borderRadius: 'var(--radius-lg)',
@@ -269,7 +273,7 @@ export const ComponentsTab: React.FC = () => {
                       Buttons showroom (Audited Sizing & Offset)
                     </span>
                     
-                    <div className="p-4 border border-[var(--color-border)] bg-[var(--color-card)]/40 rounded-[var(--radius-xl)] space-y-4">
+                    <div className="p-4 border border-[var(--color-border)] bg-[var(--color-card)]/40 backdrop-blur-md shadow-[var(--shadow-md)] rounded-[var(--radius-xl)] space-y-4">
                       
                       {/* Grid listing side-by-side to guarantee zero overflow */}
                       <table className="w-full text-left text-[11px]">
@@ -286,7 +290,7 @@ export const ComponentsTab: React.FC = () => {
                             <td className="py-2.5 font-bold">Primary Solid</td>
                             <td className="py-2.5">
                               <button
-                                className="px-3.5 py-1.5 text-[11px] font-bold text-white shadow-sm transition-all active:scale-95"
+                                className="px-3.5 py-1.5 text-[11px] font-bold text-white shadow-sm transition-all active:scale-95 hover:brightness-110"
                                 style={{ backgroundColor: 'var(--color-primary)', borderRadius: 'var(--radius-button)' }}
                               >
                                 Solid Action
@@ -295,7 +299,7 @@ export const ComponentsTab: React.FC = () => {
                             <td className="py-2.5">
                               <button
                                 onClick={triggerButtonLoading}
-                                className="px-3.5 py-1.5 text-[11px] font-bold text-white shadow-sm transition-all active:scale-95 flex items-center justify-center gap-1.5"
+                                className="px-3.5 py-1.5 text-[11px] font-bold text-white shadow-sm transition-all active:scale-95 hover:brightness-110 flex items-center justify-center gap-1.5"
                                 style={{ backgroundColor: 'var(--color-primary)', borderRadius: 'var(--radius-button)' }}
                               >
                                 {btnLoading ? <Loader2 className="w-3 h-3 animate-spin" /> : <Play className="w-3 h-3 fill-white" />}
@@ -309,7 +313,7 @@ export const ComponentsTab: React.FC = () => {
                             <td className="py-2.5 font-bold">Secondary Outline</td>
                             <td className="py-2.5">
                               <button
-                                className="px-3.5 py-1.5 text-[11px] font-bold border transition-all active:scale-95"
+                                className="px-3.5 py-1.5 text-[11px] font-bold border transition-all active:scale-95 hover:bg-[var(--color-card)]/80"
                                 style={{ borderColor: 'var(--color-border)', color: 'var(--color-text)', borderRadius: 'var(--radius-button)' }}
                               >
                                 Outline Click
@@ -317,7 +321,7 @@ export const ComponentsTab: React.FC = () => {
                             </td>
                             <td className="py-2.5">
                               <button
-                                className="px-3.5 py-1.5 text-[11px] font-bold border transition-all active:scale-95 flex items-center justify-center gap-1.5"
+                                className="px-3.5 py-1.5 text-[11px] font-bold border transition-all active:scale-95 hover:bg-[var(--color-card)]/80 flex items-center justify-center gap-1.5"
                                 style={{ borderColor: 'var(--color-border)', color: 'var(--color-text)', borderRadius: 'var(--radius-button)' }}
                               >
                                 <Settings className="w-3.5 h-3.5 text-[var(--color-text-muted)]" />
@@ -331,7 +335,7 @@ export const ComponentsTab: React.FC = () => {
                             <td className="py-2.5 font-bold">Soft Tonal</td>
                             <td className="py-2.5">
                               <button
-                                className="px-3.5 py-1.5 text-[11px] font-bold transition-all active:scale-95"
+                                className="px-3.5 py-1.5 text-[11px] font-bold transition-all active:scale-95 hover:opacity-95"
                                 style={{ 
                                   backgroundColor: 'var(--color-primary-12, rgba(99,102,241,0.12))', 
                                   color: 'var(--color-primary)', 
@@ -343,7 +347,7 @@ export const ComponentsTab: React.FC = () => {
                             </td>
                             <td className="py-2.5">
                               <button
-                                className="px-3.5 py-1.5 text-[11px] font-bold transition-all active:scale-95 flex items-center justify-center gap-1.5"
+                                className="px-3.5 py-1.5 text-[11px] font-bold transition-all active:scale-95 hover:opacity-95 flex items-center justify-center gap-1.5"
                                 style={{ 
                                   backgroundColor: 'var(--color-primary-12, rgba(99,102,241,0.12))', 
                                   color: 'var(--color-primary)', 
@@ -361,7 +365,7 @@ export const ComponentsTab: React.FC = () => {
                             <td className="py-2.5 font-bold">Danger / Error</td>
                             <td className="py-2.5">
                               <button
-                                className="px-3.5 py-1.5 text-[11px] font-bold text-white transition-all active:scale-95"
+                                className="px-3.5 py-1.5 text-[11px] font-bold text-white transition-all active:scale-95 hover:brightness-110"
                                 style={{ backgroundColor: 'var(--color-error)', borderRadius: 'var(--radius-button)' }}
                               >
                                 Terminate
@@ -369,7 +373,7 @@ export const ComponentsTab: React.FC = () => {
                             </td>
                             <td className="py-2.5">
                               <button
-                                className="px-3.5 py-1.5 text-[11px] font-bold text-white transition-all active:scale-95 flex items-center justify-center gap-1.5"
+                                className="px-3.5 py-1.5 text-[11px] font-bold text-white transition-all active:scale-95 hover:brightness-110 flex items-center justify-center gap-1.5"
                                 style={{ backgroundColor: 'var(--color-error)', borderRadius: 'var(--radius-button)' }}
                               >
                                 <Trash2 className="w-3.5 h-3.5" />
@@ -378,7 +382,7 @@ export const ComponentsTab: React.FC = () => {
                             </td>
                           </tr>
 
-                          {/* Row 5: Icons / Locked */}
+                          {/* Row 5: Link & Disabled */}
                           <tr>
                             <td className="py-2.5 font-bold">Link & Disabled</td>
                             <td className="py-2.5">
@@ -412,7 +416,7 @@ export const ComponentsTab: React.FC = () => {
                       Form & selection controls
                     </span>
 
-                    <div className="p-4 border border-[var(--color-border)] bg-[var(--color-card)]/40 rounded-[var(--radius-xl)] space-y-4">
+                    <div className="p-4 border border-[var(--color-border)] bg-[var(--color-card)]/40 backdrop-blur-md shadow-[var(--shadow-md)] rounded-[var(--radius-xl)] space-y-4">
                       
                       {/* Text Input with left icon */}
                       <div className="flex flex-col gap-1">
@@ -423,7 +427,7 @@ export const ComponentsTab: React.FC = () => {
                             type="text"
                             value={textVal}
                             onChange={(e) => setTextVal(e.target.value)}
-                            className="w-full pl-9 pr-3 py-1.5 text-[11px] bg-transparent border outline-none"
+                            className="w-full pl-9 pr-3 py-1.5 text-[11px] bg-transparent border outline-none transition-all focus:ring-1 focus:ring-[var(--color-primary)]"
                             style={{ borderColor: 'var(--color-border)', borderRadius: 'var(--radius-button)' }}
                           />
                         </div>
@@ -438,7 +442,7 @@ export const ComponentsTab: React.FC = () => {
                             type={passwordShow ? 'text' : 'password'}
                             value="aura-security-key-2026"
                             readOnly
-                            className="w-full pl-9 pr-9 py-1.5 text-[11px] bg-transparent border outline-none font-mono"
+                            className="w-full pl-9 pr-9 py-1.5 text-[11px] bg-transparent border outline-none font-mono transition-all focus:ring-1 focus:ring-[var(--color-primary)]"
                             style={{ borderColor: 'var(--color-border)', borderRadius: 'var(--radius-button)' }}
                           />
                           <button
@@ -532,7 +536,7 @@ export const ComponentsTab: React.FC = () => {
                   
                   {/* Table (2 cols width) */}
                   <div 
-                    className="md:col-span-2 border overflow-hidden bg-[var(--color-card)]"
+                    className="md:col-span-2 border overflow-hidden bg-[var(--color-card)]/50 backdrop-blur-md shadow-[var(--shadow-sm)]"
                     style={{ borderColor: 'var(--color-border)', borderRadius: 'var(--radius-lg)' }}
                   >
                     <table className="w-full text-left border-collapse text-[11px]">
@@ -569,7 +573,7 @@ export const ComponentsTab: React.FC = () => {
 
                   {/* Progress & Skeletons (1 col width) */}
                   <div
-                    className="p-4 border bg-[var(--color-card)] flex flex-col justify-between"
+                    className="p-4 border bg-[var(--color-card)]/50 backdrop-blur-md shadow-[var(--shadow-sm)] flex flex-col justify-between"
                     style={{ borderColor: 'var(--color-border)', borderRadius: 'var(--radius-lg)' }}
                   >
                     <div>
@@ -601,7 +605,7 @@ export const ComponentsTab: React.FC = () => {
                 {showModal && (
                   <div className="absolute inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center p-6 z-50">
                     <div 
-                      className="max-w-xs w-full p-5 border bg-[var(--color-card)] shadow-2xl animate-fadeIn space-y-4"
+                      className="max-w-xs w-full p-5 border bg-[var(--color-card)] backdrop-blur-lg shadow-2xl animate-fadeIn space-y-4"
                       style={{ borderColor: 'var(--color-border)', borderRadius: 'var(--radius-xl)' }}
                     >
                       <div className="flex items-start gap-2.5">
@@ -628,7 +632,7 @@ export const ComponentsTab: React.FC = () => {
                         </button>
                         <button
                           onClick={() => setShowModal(false)}
-                          className="px-3 py-1.5 text-[10px] font-bold text-white"
+                          className="px-3 py-1.5 text-[10px] font-bold text-white shadow-sm hover:brightness-110"
                           style={{
                             backgroundColor: 'var(--color-error)',
                             borderRadius: 'var(--radius-button)',
@@ -649,7 +653,7 @@ export const ComponentsTab: React.FC = () => {
         {/* VIEW 2: FULL MOBILE MOCKUP */}
         {deviceMode === 'mobile' && (
           <div 
-            className="w-[320px] aspect-[9/18] border-8 border-slate-800 shadow-2xl transition-all duration-300 flex flex-col overflow-hidden relative animate-fadeIn"
+            className="w-[320px] aspect-[9/18] border-8 border-slate-800 shadow-2xl transition-all duration-300 flex flex-col overflow-hidden relative"
             style={{
               backgroundColor: 'var(--color-bg)',
               color: 'var(--color-text)',
@@ -658,13 +662,17 @@ export const ComponentsTab: React.FC = () => {
               fontFamily: 'var(--font-sans)',
             }}
           >
+            {/* Floating ambient glow mesh blobs */}
+            <div className="absolute top-10 left-[-20px] w-48 h-48 rounded-full bg-[var(--color-primary)]/10 blur-[60px] pointer-events-none" />
+            <div className="absolute bottom-20 right-[-20px] w-48 h-48 rounded-full bg-[var(--color-accent)]/10 blur-[60px] pointer-events-none" />
+
             {/* Phone Notch */}
             <div className="absolute top-0 left-1/2 transform -translate-x-1/2 h-4 w-28 bg-slate-800 rounded-b-xl z-50 flex items-center justify-center">
               <div className="w-8 h-1 bg-slate-700 rounded-full" />
             </div>
 
             {/* Mobile Status Bar */}
-            <div className="px-5 pt-5 pb-2 text-[10px] text-[var(--color-text-muted)] flex items-center justify-between select-none">
+            <div className="px-5 pt-5 pb-2 text-[10px] text-[var(--color-text-muted)] flex items-center justify-between select-none z-10">
               <span className="font-extrabold">9:41</span>
               <div className="flex items-center gap-1">
                 <Wifi className="w-3 h-3" />
@@ -673,7 +681,7 @@ export const ComponentsTab: React.FC = () => {
             </div>
 
             {/* Mobile Top App Bar */}
-            <div className="px-4 py-3 border-b border-[var(--color-border)] flex items-center justify-between bg-[var(--color-card)]/30">
+            <div className="px-4 py-3 border-b border-[var(--color-border)] flex items-center justify-between bg-[var(--color-card)]/30 backdrop-blur-md z-10">
               <div className="flex items-center gap-2">
                 <div className="w-5 h-5 rounded bg-[var(--color-primary)] flex items-center justify-center text-white text-[9px] font-extrabold">A</div>
                 <span className="text-xs font-extrabold">Mobile Console</span>
@@ -684,22 +692,22 @@ export const ComponentsTab: React.FC = () => {
             </div>
 
             {/* Mobile Scrollable Screen Content */}
-            <div className="flex-1 p-4 space-y-4 overflow-y-auto max-h-[460px]">
+            <div className="flex-1 p-4 space-y-4 overflow-y-auto max-h-[460px] z-10 relative">
               
               {/* Button Action Matrix Card */}
-              <div className="p-3 border bg-[var(--color-card)]/50 space-y-2.5" style={{ borderColor: 'var(--color-border)', borderRadius: 'var(--radius-lg)' }}>
+              <div className="p-3 border bg-[var(--color-card)]/50 backdrop-blur-md shadow-[var(--shadow-sm)] space-y-2.5" style={{ borderColor: 'var(--color-border)', borderRadius: 'var(--radius-lg)' }}>
                 <span className="text-[8px] font-bold uppercase tracking-wider text-[var(--color-text-muted)]">Quick Actions</span>
                 <div className="flex gap-2">
                   <button
                     onClick={triggerButtonLoading}
-                    className="flex-1 py-1.5 text-[9px] font-bold text-white shadow-sm flex items-center justify-center gap-1.5 active:scale-95 transition-all"
+                    className="flex-1 py-1.5 text-[9px] font-bold text-white shadow-sm flex items-center justify-center gap-1.5 active:scale-95 transition-all hover:brightness-110"
                     style={{ backgroundColor: 'var(--color-primary)', borderRadius: 'var(--radius-button)' }}
                   >
                     {btnLoading ? <Loader2 className="w-2.5 h-2.5 animate-spin" /> : <Play className="w-2.5 h-2.5" />}
                     <span>Primary</span>
                   </button>
                   <button
-                    className="flex-1 py-1.5 text-[9px] font-bold border flex items-center justify-center gap-1.5 active:scale-95 transition-all"
+                    className="flex-1 py-1.5 text-[9px] font-bold border flex items-center justify-center gap-1.5 active:scale-95 transition-all hover:bg-[var(--color-card)]/80"
                     style={{ borderColor: 'var(--color-border)', color: 'var(--color-text)', borderRadius: 'var(--radius-button)' }}
                   >
                     <Settings className="w-2.5 h-2.5" />
@@ -708,7 +716,7 @@ export const ComponentsTab: React.FC = () => {
                 </div>
                 <div className="flex gap-2">
                   <button
-                    className="flex-1 py-1.5 text-[9px] font-bold flex items-center justify-center gap-1 active:scale-95 transition-all"
+                    className="flex-1 py-1.5 text-[9px] font-bold flex items-center justify-center gap-1 active:scale-95 transition-all hover:opacity-95"
                     style={{
                       backgroundColor: 'var(--color-primary-12, rgba(99,102,241,0.12))',
                       color: 'var(--color-primary)',
@@ -718,7 +726,7 @@ export const ComponentsTab: React.FC = () => {
                     <span>Soft Tonal</span>
                   </button>
                   <button
-                    className="flex-1 py-1.5 text-[9px] font-bold flex items-center justify-center gap-1 active:scale-95 transition-all"
+                    className="flex-1 py-1.5 text-[9px] font-bold flex items-center justify-center gap-1 active:scale-95 transition-all hover:brightness-110"
                     style={{ backgroundColor: 'var(--color-error)', color: 'white', borderRadius: 'var(--radius-button)' }}
                   >
                     <Trash2 className="w-2.5 h-2.5" />
@@ -728,7 +736,7 @@ export const ComponentsTab: React.FC = () => {
               </div>
 
               {/* Form & Selection controls */}
-              <div className="p-3 border bg-[var(--color-card)]/50 space-y-3" style={{ borderColor: 'var(--color-border)', borderRadius: 'var(--radius-lg)' }}>
+              <div className="p-3 border bg-[var(--color-card)]/50 backdrop-blur-md shadow-[var(--shadow-sm)] space-y-3" style={{ borderColor: 'var(--color-border)', borderRadius: 'var(--radius-lg)' }}>
                 <span className="text-[8px] font-bold uppercase tracking-wider text-[var(--color-text-muted)]">Configuration</span>
                 
                 <div className="flex flex-col gap-1">
@@ -737,7 +745,7 @@ export const ComponentsTab: React.FC = () => {
                     type="text"
                     value={textVal}
                     onChange={(e) => setTextVal(e.target.value)}
-                    className="px-2.5 py-1.5 text-[10px] bg-transparent border outline-none"
+                    className="px-2.5 py-1.5 text-[10px] bg-transparent border outline-none transition-all focus:ring-1 focus:ring-[var(--color-primary)]"
                     style={{ borderColor: 'var(--color-border)', borderRadius: 'var(--radius-button)' }}
                   />
                 </div>
@@ -814,7 +822,7 @@ export const ComponentsTab: React.FC = () => {
 
               {/* Progress Surface card */}
               <div
-                className="p-4 border bg-[var(--color-card)] shadow-[var(--shadow-sm)]"
+                className="p-4 border bg-[var(--color-card)]/50 backdrop-blur-md shadow-[var(--shadow-sm)]"
                 style={{ borderColor: 'var(--color-border)', borderRadius: 'var(--radius-xl)' }}
               >
                 <div className="flex items-center justify-between text-[10px] mb-2">
@@ -829,7 +837,7 @@ export const ComponentsTab: React.FC = () => {
             </div>
 
             {/* Mobile Bottom Tab Navigation */}
-            <div className="px-5 py-3 border-t border-[var(--color-border)] bg-[var(--color-card)]/80 flex items-center justify-between select-none">
+            <div className="px-5 py-3 border-t border-[var(--color-border)] bg-[var(--color-card)]/80 backdrop-blur-md flex items-center justify-between select-none z-10">
               <button className="flex flex-col items-center gap-0.5 text-[var(--color-primary)]">
                 <Layers className="w-4.5 h-4.5" />
                 <span className="text-[8px] font-bold">Home</span>
