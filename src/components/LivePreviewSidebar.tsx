@@ -191,11 +191,11 @@ export const LivePreviewSidebar: React.FC = () => {
             
             {/* Custom Checkbox */}
             <div 
-              className="flex items-center gap-2.5 cursor-pointer"
+              className="flex items-center gap-2.5 cursor-pointer group"
               onClick={() => setIsChecked(!isChecked)}
             >
               <div 
-                className="w-4.5 h-4.5 border flex items-center justify-center transition-all flex-shrink-0"
+                className="w-4.5 h-4.5 border flex items-center justify-center transition-all flex-shrink-0 group-hover:border-[var(--color-primary)] group-hover:shadow-[0_0_0_3px_rgba(99,102,241,0.15)]"
                 style={{
                   borderColor: isChecked ? 'var(--color-primary)' : 'var(--color-border)',
                   backgroundColor: isChecked ? 'var(--color-primary)' : 'transparent',

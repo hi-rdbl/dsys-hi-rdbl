@@ -68,78 +68,86 @@ main p.text-slate-400 {
   color: #64748b !important; /* slate-500 */
 }
 
-/* Scoped modifiers panel (Left panel in editor pages) */
-.xl\:col-span-4,
-.lg\:col-span-6, 
-.lg\:col-span-5,
-.lg\:col-span-3,
-.lg\:col-span-4 {
-  color: #1e293b;
-}
-
-/* Settings block titles */
-.xl\:col-span-4 h3,
-.lg\:col-span-6 h3,
-.lg\:col-span-5 h3,
-.lg\:col-span-3 h3 {
-  color: #0f172a !important;
-}
-
-/* Cards & panels inside settings */
-.xl\:col-span-4 .glass-panel,
-.lg\:col-span-6 .glass-panel,
-.lg\:col-span-5 .glass-panel,
-.lg\:col-span-3 .glass-panel,
-.lg\:col-span-4 .glass-panel {
+/* All glass-panels inside main settings tabs (Dashboard, Colors, Typography, etc.) */
+main .glass-panel {
   background: #ffffff !important;
   border-color: #e2e8f0 !important;
+  color: #334155 !important;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02) !important;
 }
 
-/* Inner item cards */
-.xl\:col-span-4 div[class*="bg-slate-950"],
-.xl\:col-span-4 div[class*="bg-slate-900"],
-.lg\:col-span-5 div[class*="bg-slate-950"],
-.lg\:col-span-5 div[class*="bg-slate-900"] {
+main .glass-panel h2,
+main .glass-panel h3,
+main .glass-panel h4,
+main .glass-panel h5 {
+  color: #0f172a !important; /* slate-900 */
+}
+
+main .glass-panel p,
+main .glass-panel span,
+main .glass-panel label,
+main .glass-panel td {
+  color: #475569 !important; /* slate-600 */
+}
+
+main .glass-panel label[class*="text-slate-"] {
+  color: #475569 !important;
+}
+
+/* Card inner item boxes in settings */
+main div[class*="bg-slate-950"],
+main div[class*="bg-slate-900"],
+main div[class*="bg-slate-900/30"] {
   background-color: #f8fafc !important; /* slate-50 */
   border-color: #e2e8f0 !important;
 }
 
+main div[class*="border-slate-800"] {
+  border-color: #e2e8f0 !important;
+}
+
 /* Inputs, Textareas, Selects styling overrides */
-.xl\:col-span-4 select,
-.xl\:col-span-4 select option,
-.xl\:col-span-4 input[type="text"],
-.lg\:col-span-5 select,
-.lg\:col-span-5 input[type="text"],
-.lg\:col-span-5 textarea,
-.lg\:col-span-3 select,
-.lg\:col-span-3 input[type="text"] {
+main select,
+main select option,
+main input[type="text"],
+main input[type="number"],
+main textarea {
   background-color: #ffffff !important;
   border-color: #cbd5e1 !important; /* slate-300 */
   color: #0f172a !important;
 }
 
-/* Left panel text colors */
-.xl\:col-span-4 label,
-.xl\:col-span-4 span,
-.lg\:col-span-5 label,
-.lg\:col-span-5 span,
-.lg\:col-span-3 label,
-.lg\:col-span-3 span {
-  color: #334155 !important; /* slate-700 */
+/* Aesthetic presets buttons in DashboardTab */
+main .glass-panel button[class*="border-slate-800"] {
+  border-color: #e2e8f0 !important;
+  background-color: #ffffff !important;
+}
+main .glass-panel button[class*="border-indigo-500"] {
+  border-color: #0f172a !important; /* monochrome active border */
+  background-color: #f8fafc !important;
+}
+main .glass-panel button[class*="border-indigo-500"] span {
+  color: #0f172a !important;
 }
 
-/* Highlights */
-.xl\:col-span-4 span.text-indigo-400,
-.lg\:col-span-5 span.text-indigo-400,
-.lg\:col-span-3 span.text-indigo-400 {
-  color: #4f46e5 !important; /* indigo-600 */
-  font-weight: 700;
+/* Drag & Drop upload card */
+main label[class*="border-slate-800"] {
+  border-color: #cbd5e1 !important;
+  background-color: #f8fafc !important;
 }
 
-/* Range input trackers */
-.xl\:col-span-4 input[type="range"] {
-  background-color: #e2e8f0 !important;
+/* Maintain dark code blocks in Export tab & Code Exporter */
+main .bg-slate-950,
+main .bg-slate-950 *,
+main pre,
+main code {
+  background-color: #020617 !important; /* deep dark background */
+  color: #cbd5e1 !important; /* light slate text */
+  border-color: #0f172a !important;
+}
+main .bg-slate-950 span,
+main pre span {
+  color: inherit !important;
 }
 
 /* Scoped overrides for right-side preview panels in editor tabs */
