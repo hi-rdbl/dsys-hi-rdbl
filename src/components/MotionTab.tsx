@@ -3,7 +3,7 @@ import { useDesignSystem } from '../context/DesignSystemContext';
 import { Zap, Eye, Play, Sparkles, ChevronRight } from 'lucide-react';
 
 export const MotionTab: React.FC = () => {
-  const { tokens, updateShadow, updateMotion } = useDesignSystem();
+  const { tokens, colorMode, updateShadow, updateMotion } = useDesignSystem();
   const [animate, setAnimate] = useState(false);
   const [activeEase, setActiveEase] = useState<'easeDefault' | 'easeIn' | 'easeOut' | 'easeInOut'>('easeDefault');
   
@@ -24,7 +24,7 @@ export const MotionTab: React.FC = () => {
   const activeEffect = tokens.motion.buttonActiveEffect ?? 'shrink';
 
   // Retrieve current primary color mode value
-  const activePrimary = tokens.colors.primary.light;
+  const activePrimary = tokens.colors.primary[colorMode];
 
   return (
     <div className="space-y-8 animate-fadeIn">
@@ -292,8 +292,8 @@ export const MotionTab: React.FC = () => {
                 onMouseUp={() => setSandboxPress(false)}
                 className="relative px-8 py-3.5 text-sm font-extrabold text-white select-none transition-all outline-none border border-transparent"
                 style={{
-                  backgroundColor: hoverEffect === 'slide-fill' && sandboxHover ? 'transparent' : tokens.colors.primary.light,
-                  borderColor: hoverEffect === 'slide-fill' ? tokens.colors.primary.light : 'transparent',
+                  backgroundColor: hoverEffect === 'slide-fill' && sandboxHover ? 'transparent' : tokens.colors.primary[colorMode],
+                  borderColor: hoverEffect === 'slide-fill' ? tokens.colors.primary[colorMode] : 'transparent',
                   borderRadius: tokens.radius.button.includes('var(') ? '12px' : tokens.radius.button,
                   transition: `all ${tokens.motion.durationFast} ${tokens.motion.easeDefault}`,
                   cursor: 'pointer',
@@ -348,7 +348,7 @@ export const MotionTab: React.FC = () => {
                     {/* Mask covering the inner area */}
                     <div 
                       className="absolute inset-[2px] rounded-[inherit]"
-                      style={{ backgroundColor: tokens.colors.primary.light }}
+                      style={{ backgroundColor: tokens.colors.primary[colorMode] }}
                     />
                   </div>
                 )}
@@ -358,7 +358,7 @@ export const MotionTab: React.FC = () => {
                   <div 
                     className="absolute inset-0 transition-all pointer-events-none"
                     style={{
-                      backgroundColor: tokens.colors.accent.light,
+                      backgroundColor: tokens.colors.accent[colorMode],
                       transform: sandboxHover ? 'translateX(0)' : 'translateX(-100%)',
                       transition: `transform ${tokens.motion.durationNormal} ${tokens.motion.easeDefault}`,
                       zIndex: 0
