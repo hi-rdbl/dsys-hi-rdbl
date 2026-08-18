@@ -61,13 +61,21 @@ export const LivePreviewSidebar: React.FC = () => {
   return (
     <div 
       ref={containerRef}
-      className="w-96 h-full overflow-hidden border-l flex flex-col p-6 flex-shrink-0 select-none bg-white border-slate-200 text-slate-800"
+      className="w-96 h-full overflow-hidden border-l flex flex-col p-6 flex-shrink-0 select-none transition-colors duration-300"
+      style={{
+        backgroundColor: 'var(--color-bg)',
+        color: 'var(--color-text)',
+        borderColor: 'var(--color-border)',
+      }}
     >
       {/* Sidebar Header */}
-      <div className="flex items-center justify-between pb-3 border-b border-slate-200 mb-4 flex-shrink-0">
+      <div 
+        className="flex items-center justify-between pb-3 border-b mb-4 flex-shrink-0"
+        style={{ borderColor: 'var(--color-border)' }}
+      >
         <div className="flex items-center gap-1.5">
-          <Info className="w-4 h-4 text-slate-500" />
-          <span className="text-xs font-extrabold uppercase tracking-wider text-slate-600">
+          <Info className="w-4 h-4 text-[var(--color-text-muted)]" />
+          <span className="text-xs font-extrabold uppercase tracking-wider text-[var(--color-text-muted)]">
             Live Spec Preview
           </span>
         </div>
@@ -75,14 +83,19 @@ export const LivePreviewSidebar: React.FC = () => {
         {/* Theme switcher */}
         <button
           onClick={toggleColorMode}
-          className="px-2 py-1 rounded-lg border border-slate-200 text-xs font-bold text-slate-600 hover:text-slate-900 transition-all active:scale-95 flex items-center gap-1 bg-slate-50 hover:bg-slate-100"
+          className="px-2 py-1 rounded-lg border text-xs font-bold transition-all active:scale-95 flex items-center gap-1"
+          style={{
+            borderColor: 'var(--color-border)',
+            backgroundColor: 'var(--color-card)',
+            color: 'var(--color-text)',
+          }}
         >
           <span>Mode:</span>
           <span className="capitalize text-[var(--color-primary)]">{colorMode}</span>
         </button>
       </div>
 
-      {/* Scrollable Raw Components Spec List */}
+      {/* Scrollable Component Spec List */}
       <div 
         className="flex-1 overflow-y-auto space-y-6 pr-1 pb-4"
         style={{
@@ -92,12 +105,18 @@ export const LivePreviewSidebar: React.FC = () => {
         
         {/* SECTION 1: BUTTON MATRIX */}
         <div className="space-y-2">
-          <span className="text-[9px] font-bold uppercase tracking-wider text-slate-400">Button Presets</span>
-          <div className="p-3.5 border border-slate-200 rounded-xl bg-slate-50/50 space-y-3">
+          <span className="text-[9px] font-bold uppercase tracking-wider text-[var(--color-text-muted)]">Button Presets</span>
+          <div 
+            className="p-3.5 border rounded-xl space-y-3 bg-[var(--color-card)]/40"
+            style={{
+              borderColor: 'var(--color-border)',
+              borderRadius: 'var(--radius-lg)',
+            }}
+          >
             
             {/* Primary Solid Row */}
             <div className="flex items-center justify-between gap-3">
-              <span className="text-[10px] font-bold text-slate-500">Primary Solid</span>
+              <span className="text-[10px] font-bold text-[var(--color-text-muted)]">Primary Solid</span>
               <button
                 onClick={triggerLoading}
                 className="px-3.5 py-1.5 text-[11px] font-bold text-white shadow-sm transition-all active:scale-95 flex items-center justify-center gap-1.5"
@@ -113,7 +132,7 @@ export const LivePreviewSidebar: React.FC = () => {
 
             {/* Outlined Secondary Row */}
             <div className="flex items-center justify-between gap-3">
-              <span className="text-[10px] font-bold text-slate-500">Secondary Outline</span>
+              <span className="text-[10px] font-bold text-[var(--color-text-muted)]">Secondary Outline</span>
               <button
                 className="px-3.5 py-1.5 text-[11px] font-bold border transition-all active:scale-95 flex items-center justify-center gap-1.5"
                 style={{
@@ -129,7 +148,7 @@ export const LivePreviewSidebar: React.FC = () => {
 
             {/* Soft Tonal Row */}
             <div className="flex items-center justify-between gap-3">
-              <span className="text-[10px] font-bold text-slate-500">Soft Tonal</span>
+              <span className="text-[10px] font-bold text-[var(--color-text-muted)]">Soft Tonal</span>
               <button
                 className="px-3.5 py-1.5 text-[11px] font-bold transition-all active:scale-95 flex items-center justify-center"
                 style={{
@@ -144,7 +163,7 @@ export const LivePreviewSidebar: React.FC = () => {
 
             {/* Ghost Link Row */}
             <div className="flex items-center justify-between gap-3">
-              <span className="text-[10px] font-bold text-slate-500">Ghost Link</span>
+              <span className="text-[10px] font-bold text-[var(--color-text-muted)]">Ghost Link</span>
               <button
                 className="text-[11px] font-bold transition-all active:scale-95 flex items-center justify-center gap-1 text-[var(--color-primary)]"
               >
@@ -154,8 +173,13 @@ export const LivePreviewSidebar: React.FC = () => {
             </div>
 
             {/* Circle Icon and Disabled Row */}
-            <div className="flex items-center justify-between gap-3 pt-2.5 border-t border-slate-200/60">
-              <span className="text-[10px] font-bold text-slate-500">Circle & Locked</span>
+            <div 
+              className="flex items-center justify-between gap-3 pt-2.5 border-t"
+              style={{
+                borderColor: 'var(--color-border)',
+              }}
+            >
+              <span className="text-[10px] font-bold text-[var(--color-text-muted)]">Circle & Locked</span>
               <div className="flex items-center gap-2">
                 <button
                   className="w-7 h-7 flex items-center justify-center border relative transition-all active:scale-90"
@@ -186,8 +210,14 @@ export const LivePreviewSidebar: React.FC = () => {
 
         {/* SECTION 2: SELECTION CONTROLS */}
         <div className="space-y-2">
-          <span className="text-[9px] font-bold uppercase tracking-wider text-slate-400">Selection Controls</span>
-          <div className="p-3.5 border border-slate-200 rounded-xl bg-slate-50/50 space-y-3">
+          <span className="text-[9px] font-bold uppercase tracking-wider text-[var(--color-text-muted)]">Selection Controls</span>
+          <div 
+            className="p-3.5 border rounded-xl space-y-3 bg-[var(--color-card)]/40"
+            style={{
+              borderColor: 'var(--color-border)',
+              borderRadius: 'var(--radius-lg)',
+            }}
+          >
             
             {/* Custom Checkbox */}
             <div 
@@ -247,7 +277,10 @@ export const LivePreviewSidebar: React.FC = () => {
             </div>
 
             {/* Switch Toggle */}
-            <div className="flex items-center justify-between text-[11px] pt-2 border-t border-slate-200/50">
+            <div 
+              className="flex items-center justify-between text-[11px] pt-2 border-t"
+              style={{ borderColor: 'var(--color-border)' }}
+            >
               <span className="font-semibold">Switch Toggle</span>
               <div
                 onClick={() => setIsChecked(!isChecked)}
@@ -263,17 +296,24 @@ export const LivePreviewSidebar: React.FC = () => {
 
         {/* SECTION 3: SPACING & RADIUS VISUAL PREVIEW */}
         <div className="space-y-2">
-          <span className="text-[9px] font-bold uppercase tracking-wider text-slate-400">Radius & Spacing Specs</span>
-          <div className="p-3.5 border border-slate-200 rounded-xl bg-slate-50/50 space-y-4">
+          <span className="text-[9px] font-bold uppercase tracking-wider text-[var(--color-text-muted)]">Radius & Spacing Specs</span>
+          <div 
+            className="p-3.5 border rounded-xl space-y-4 bg-[var(--color-card)]/40"
+            style={{
+              borderColor: 'var(--color-border)',
+              borderRadius: 'var(--radius-lg)',
+            }}
+          >
             
             {/* Radius Preview block */}
             <div className="space-y-1.5">
-              <span className="text-[9px] font-semibold text-slate-500 block">Radius Scale (Button)</span>
+              <span className="text-[9px] font-semibold text-[var(--color-text-muted)] block">Radius Scale (Button)</span>
               <div 
-                className="h-10 w-full border flex items-center justify-center text-[10px] font-bold uppercase transition-all bg-[var(--color-card)]/50"
+                className="h-10 w-full border flex items-center justify-center text-[10px] font-bold uppercase transition-all"
                 style={{
                   borderColor: 'var(--color-border)',
                   borderRadius: 'var(--radius-button)',
+                  backgroundColor: 'var(--color-card)',
                 }}
               >
                 var(--radius-button)
@@ -282,7 +322,7 @@ export const LivePreviewSidebar: React.FC = () => {
 
             {/* Spacing preview block */}
             <div className="space-y-1.5">
-              <span className="text-[9px] font-semibold text-slate-500 block">Spacing (Base Unit)</span>
+              <span className="text-[9px] font-semibold text-[var(--color-text-muted)] block">Spacing (Base Unit)</span>
               <div className="flex gap-2 items-end h-8">
                 <div className="h-full bg-[var(--color-primary)] opacity-40" style={{ width: 'var(--spacing-1)' }} title="spacing-1" />
                 <div className="h-full bg-[var(--color-primary)] opacity-60" style={{ width: 'var(--spacing-2)' }} title="spacing-2" />
