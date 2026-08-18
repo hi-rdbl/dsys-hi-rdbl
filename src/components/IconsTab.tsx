@@ -1,6 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDesignSystem } from '../context/DesignSystemContext';
-import { Copy, Check, Search, Plus, Sparkles, AlertCircle } from 'lucide-react';
+import { 
+  Copy, 
+  Check, 
+  Search, 
+  Plus, 
+  Sparkles, 
+  AlertCircle, 
+  Minimize2,
+  RefreshCw,
+  RotateCw,
+  Download,
+  Code,
+  FileCode,
+  CheckSquare,
+  Square
+} from 'lucide-react';
 
 const INITIAL_ICON_PATHS: Record<string, string> = {
   Home: '<path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>',
@@ -19,38 +34,139 @@ const INITIAL_ICON_PATHS: Record<string, string> = {
 export const IconsTab: React.FC = () => {
   const { tokens, colorMode } = useDesignSystem();
   
-  // Icon collection loaded into state to support dynamic additions
+  // Icon collections & selection
   const [localIcons, setLocalIcons] = useState<Record<string, string>>(INITIAL_ICON_PATHS);
-  
   const [selectedIcon, setSelectedIcon] = useState('Home');
+  const [checkedIcons, setCheckedIcons] = useState<string[]>(Object.keys(INITIAL_ICON_PATHS));
+  
+  // Styling adjustments
   const [selectedColor, setSelectedColor] = useState<'primary' | 'secondary' | 'accent' | 'success' | 'warning' | 'error' | 'info'>('primary');
   const [iconSizeKey, setIconSizeKey] = useState<'sizeSm' | 'sizeMd' | 'sizeLg'>('sizeMd');
-  const [iconCopied, setIconCopied] = useState<'svg' | 'jsx' | 'library' | null>(null);
+  
+  // Clipboard copy and download status states
+  const [copiedState, setCopiedState] = useState<'svg' | 'jsx' | 'uri' | 'library' | 'saved' | null>(null);
 
-  // Search query & Custom SVG injector states
+  // SVG Viewer State parameters
+  const [rawSvgCode, setRawSvgCode] = useState('');
+  const [bgMode, setBgMode] = useState<'grid' | 'white' | 'dark'>('grid');
+  const [zoomLevel, setZoomLevel] = useState(120);
+  const [rotateAngle, setRotateAngle] = useState(0);
+  const [flipH, setFlipH] = useState(false);
+  const [flipV, setFlipV] = useState(false);
+
+  // Search & Import state variables
   const [searchQuery, setSearchQuery] = useState('');
   const [customIconName, setCustomIconName] = useState('');
   const [customIconPath, setCustomIconPath] = useState('');
   const [customIconError, setCustomIconError] = useState('');
 
-  const filteredIconKeys = Object.keys(localIcons).filter((name) =>
-    name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
-  const handleCopyIconSvg = () => {
+  // Sync XML editor string when the selected icon or styling tokens change
+  useEffect(() => {
     const path = localIcons[selectedIcon] || '';
     const stroke = tokens.icons.strokeWidth;
     const size = tokens.icons[iconSizeKey];
     const color = tokens.colors[selectedColor][colorMode];
-    const svgCode = `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="${stroke}" stroke-linecap="round" stroke-linejoin="round">${path}</svg>`;
-    navigator.clipboard.writeText(svgCode);
-    setIconCopied('svg');
-    setTimeout(() => setIconCopied(null), 2000);
+    
+    const initialXml = `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="${stroke}" stroke-linecap="round" stroke-linejoin="round">
+  ${path}
+</svg>`;
+    setRawSvgCode(initialXml);
+  }, [selectedIcon, localIcons, iconSizeKey, selectedColor, tokens, colorMode]);
+
+  const filteredIconKeys = Object.keys(localIcons).filter((name) =>
+    name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  // Toggle dynamic library selection checkboxes
+  const handleToggleIconChecked = (iconName: string, e: React.MouseEvent) => {
+    e.stopPropagation(); // prevent clicking card from loading into preview
+    if (checkedIcons.includes(iconName)) {
+      setCheckedIcons(prev => prev.filter(name => name !== iconName));
+    } else {
+      setCheckedIcons(prev => [...prev, iconName]);
+    }
   };
 
-  const handleCopyIconJsx = () => {
-    const path = localIcons[selectedIcon] || '';
+  const handleSelectAll = () => {
+    setCheckedIcons(Object.keys(localIcons));
+  };
+
+  const handleDeselectAll = () => {
+    setCheckedIcons([]);
+  };
+
+  // SVGO Optimization Simulator (Removes tags, comments, shortens floats)
+  const handleOptimizeSvg = () => {
+    let clean = rawSvgCode;
+    clean = clean.replace(/<\?xml.*\?>/gi, ''); // remove doctypes
+    clean = clean.replace(/<!DOCTYPE.*?>/gi, '');
+    clean = clean.replace(/<!--[\s\S]*?-->/g, ''); // remove comments
+    clean = clean.replace(/\sxmlns:[\w-]+=[\'\"].*?[\'\"]/g, ''); // remove schema references
+    clean = clean.replace(/\s(x|y|id|class|xml:space|enable-background|sketch:type)=[\'\"].*?[\'\"]/gi, '');
+    // Round floats to 2 decimal places to minimize coordinate sizes
+    clean = clean.replace(/(-?\d+\.\d{3,})/g, (val) => Number(val).toFixed(2));
+    clean = clean.replace(/>\s+</g, '><'); // minify whitespace
+    setRawSvgCode(clean.trim());
+  };
+
+  // Beautify Formatting parser
+  const handleBeautifySvg = () => {
+    let raw = rawSvgCode.replace(/>\s+</g, '><').trim();
+    let formatted = '';
+    let reg = /(>)(<)(\/*)/g;
+    raw = raw.replace(reg, '$1\r\n$2$3');
+    let pad = 0;
+    
+    raw.split('\r\n').forEach((node) => {
+      let indent = 0;
+      if (node.match(/.+<\/\w[^>]*>$/)) {
+        indent = 0;
+      } else if (node.match(/^<\/\w/)) {
+        if (pad !== 0) pad -= 1;
+      } else if (node.match(/^<\w[^>]*[^\/]>$/)) {
+        indent = 1;
+      }
+      formatted += '  '.repeat(pad) + node + '\r\n';
+      pad += indent;
+    });
+    setRawSvgCode(formatted.trim());
+  };
+
+  // Sync Color tokens: Replace any hex/color code in XML with active primary token color
+  const handleSyncColors = () => {
+    const activeColor = tokens.colors[selectedColor][colorMode];
+    let code = rawSvgCode;
+    code = code.replace(/stroke="[^"]*"/gi, `stroke="${activeColor}"`);
+    setRawSvgCode(code);
+  };
+
+  // Save the current XML inner path modifications back to local catalog
+  const handleSaveToCatalog = () => {
+    // Extract inner paths from <svg>...</svg>
+    const match = rawSvgCode.match(/<svg[^>]*>([\s\S]*?)<\/svg>/i);
+    if (match && match[1]) {
+      setLocalIcons(prev => ({
+        ...prev,
+        [selectedIcon]: match[1].trim()
+      }));
+      setCopiedState('saved');
+      setTimeout(() => setCopiedState(null), 1800);
+    }
+  };
+
+  // Exporters
+  const handleCopyRawSvg = () => {
+    navigator.clipboard.writeText(rawSvgCode);
+    setCopiedState('svg');
+    setTimeout(() => setCopiedState(null), 2000);
+  };
+
+  const handleCopyReactJsx = () => {
+    // Extract inner path elements
+    const match = rawSvgCode.match(/<svg[^>]*>([\s\S]*?)<\/svg>/i);
+    const innerPath = match && match[1] ? match[1].trim() : '';
     const sizeVar = iconSizeKey === 'sizeSm' ? 'sm' : iconSizeKey === 'sizeMd' ? 'md' : 'lg';
+    
     const jsxCode = `import React from 'react';
 
 export const ${selectedIcon}Icon = ({ className = '', style = {} }: { className?: string; style?: React.CSSProperties }) => (
@@ -69,30 +185,86 @@ export const ${selectedIcon}Icon = ({ className = '', style = {} }: { className?
       ...style,
     }}
   >
-    ${path}
+    ${innerPath}
   </svg>
 );`;
     navigator.clipboard.writeText(jsxCode);
-    setIconCopied('jsx');
-    setTimeout(() => setIconCopied(null), 2000);
+    setCopiedState('jsx');
+    setTimeout(() => setCopiedState(null), 2000);
   };
 
-  // Export full React Icon catalog containing all loaded icons in one file
-  const handleCopyFullLibrary = () => {
-    const header = `import React from 'react';\n\n// ==========================================================================\n// Aura UI Design System - Icon Library Module\n// ==========================================================================\n\ninterface IconProps {\n  className?: string;\n  style?: React.CSSProperties;\n}\n\n`;
-    const body = Object.entries(localIcons).map(([name, path]) => {
-      return `export const ${name}Icon: React.FC<IconProps> = ({ className = '', style = {} }) => (\n  <svg \n    xmlns="http://www.w3.org/2000/svg" \n    viewBox="0 0 24 24" \n    fill="none" \n    strokeLinecap="round" \n    strokeLinejoin="round"\n    className={className}\n    style={{\n      width: 'var(--icon-size-md)',\n      height: 'var(--icon-size-md)',\n      stroke: 'var(--color-primary)',\n      strokeWidth: 'var(--icon-stroke)',\n      ...style,\n    }}\n  >\n    ${path}\n  </svg>\n);`;
+  const handleCopyDataUri = () => {
+    const encoded = encodeURIComponent(rawSvgCode)
+      .replace(/'/g, "%27")
+      .replace(/"/g, "%22");
+    const uri = `data:image/svg+xml;utf8,${encoded}`;
+    navigator.clipboard.writeText(uri);
+    setCopiedState('uri');
+    setTimeout(() => setCopiedState(null), 2000);
+  };
+
+  const handleDownloadSvgFile = () => {
+    const blob = new Blob([rawSvgCode], { type: 'image/svg+xml' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${selectedIcon.toLowerCase()}.svg`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  // Compile and Export Selected Library
+  const handleExportSelectedLibrary = () => {
+    if (checkedIcons.length === 0) {
+      alert("Please select at least one icon checkbox in the catalog!");
+      return;
+    }
+    const header = `import React from 'react';
+
+// ==========================================================================
+// Aura UI Design System - Exported Selected Icon Library Module
+// Generated: ${new Date().toISOString().split('T')[0]}
+// ==========================================================================
+
+interface IconProps {
+  className?: string;
+  style?: React.CSSProperties;
+}
+
+`;
+    const body = checkedIcons.map((name) => {
+      const path = localIcons[name] || '';
+      return `export const ${name}Icon: React.FC<IconProps> = ({ className = '', style = {} }) => (
+  <svg 
+    xmlns="http://www.w3.org/2000/svg" 
+    viewBox="0 0 24 24" 
+    fill="none" 
+    strokeLinecap="round" 
+    strokeLinejoin="round"
+    className={className}
+    style={{
+      width: 'var(--icon-size-md)',
+      height: 'var(--icon-size-md)',
+      stroke: 'var(--color-primary)',
+      strokeWidth: 'var(--icon-stroke)',
+      ...style,
+    }}
+  >
+    ${path}
+  </svg>
+);`;
     }).join('\n\n');
 
     navigator.clipboard.writeText(header + body);
-    setIconCopied('library');
-    setTimeout(() => setIconCopied(null), 2000);
+    setCopiedState('library');
+    setTimeout(() => setCopiedState(null), 2500);
   };
 
   const handleAddCustomIcon = () => {
     if (!customIconName.trim() || !customIconPath.trim()) return;
     
-    // Format name to ensure it is alphanumeric PascalCase
     const formattedName = customIconName
       .trim()
       .replace(/[^a-zA-Z0-9]/g, '')
@@ -108,271 +280,476 @@ export const ${selectedIcon}Icon = ({ className = '', style = {} }: { className?
       [formattedName]: customIconPath.trim(),
     }));
 
+    // Add to checked list automatically
+    setCheckedIcons(prev => [...prev, formattedName]);
+
     setSelectedIcon(formattedName);
     setCustomIconName('');
     setCustomIconPath('');
     setCustomIconError('');
   };
 
+  // SVG grid backdrop styles
+  const gridStyle = bgMode === 'grid' 
+    ? {
+        backgroundImage: 'radial-gradient(rgba(148, 163, 184, 0.18) 1px, transparent 0)',
+        backgroundSize: '12px 12px',
+        backgroundColor: colorMode === 'dark' ? '#0f172a' : '#f8fafc'
+      }
+    : bgMode === 'white'
+    ? { backgroundColor: '#ffffff' }
+    : { backgroundColor: '#020617' };
+
   return (
     <div className="space-y-8 animate-fadeIn">
-      {/* Header */}
-      <div>
-        <h1 className="text-3xl font-extrabold text-white tracking-tight mb-2">Icon Code Explorer</h1>
-        <p className="text-slate-400 text-sm">
-          Customize and export inline SVG assets, paste custom paths, or extract a fully variable-compliant React icon library.
-        </p>
+      {/* Page Header */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-extrabold tracking-tight mb-2">SVG Viewer & Icon Studio</h1>
+          <p className="text-slate-500 text-sm">
+            Professional dual-pane vector graphics workstation. Customize codes, beautify, and download individual assets, or compile custom-selected libraries.
+          </p>
+        </div>
+
+        {/* Selected Library Code Trigger */}
+        <div className="flex items-center gap-3">
+          <button
+            onClick={handleExportSelectedLibrary}
+            className="px-4 py-2 bg-slate-900 border border-slate-800 hover:bg-slate-800 text-xs font-bold rounded-xl text-white flex items-center gap-1.5 shadow-sm transition-all active:scale-95"
+          >
+            {copiedState === 'library' ? (
+              <>
+                <Check className="w-3.5 h-3.5 text-emerald-400" />
+                <span>Selected Library Copied!</span>
+              </>
+            ) : (
+              <>
+                <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
+                <span>Export Library ({checkedIcons.length} Checked)</span>
+              </>
+            )}
+          </button>
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      {/* DUAL PANE SVG WORKSTATION STUDIO */}
+      <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 items-start">
         
-        {/* Left panel: Icon selection catalog & search (5 cols) */}
-        <div className="lg:col-span-5 space-y-5">
-          <div className="glass-panel p-5 rounded-2xl space-y-4">
+        {/* LEFT PANE: SVG Code Editor & Operations (7 Columns) */}
+        <div className="xl:col-span-7 space-y-4">
+          <div className="glass-panel p-5 rounded-2xl space-y-4 flex flex-col">
             
-            {/* Search and Title */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-              <span className="text-xs font-bold text-white uppercase tracking-wider block">
-                Icon Catalog
-              </span>
-              <div className="relative flex-1 sm:max-w-[180px]">
-                <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-500" />
-                <input
-                  type="text"
-                  placeholder="Filter icons..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-8 pr-3 py-1.5 text-xs bg-slate-950/60 border border-slate-800 rounded-lg outline-none text-slate-200"
-                />
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Code className="w-4 h-4 text-indigo-500" />
+                <span className="text-xs font-extrabold uppercase tracking-wider text-slate-800">
+                  SVG XML Source Code
+                </span>
               </div>
-            </div>
-
-            {/* Catalog grid */}
-            <div className="grid grid-cols-3 gap-2 overflow-y-auto max-h-[300px] pr-1">
-              {filteredIconKeys.map((iconName) => {
-                const isSelected = selectedIcon === iconName;
-                const path = localIcons[iconName];
-                return (
-                  <button
-                    key={iconName}
-                    onClick={() => setSelectedIcon(iconName)}
-                    className="p-3 border rounded-xl flex flex-col items-center justify-center gap-1.5 transition-all active:scale-95 text-center min-h-[75px]"
-                    style={{
-                      borderColor: isSelected ? 'var(--color-primary)' : 'var(--color-border)',
-                      backgroundColor: isSelected ? 'rgba(99, 102, 241, 0.12)' : 'transparent',
-                    }}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="18"
-                      height="18"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke={isSelected ? 'var(--color-primary)' : 'var(--color-text-muted)'}
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      dangerouslySetInnerHTML={{ __html: path }}
-                    />
-                    <span className="text-[9px] font-bold truncate w-full text-slate-400 mt-1">
-                      {iconName}
-                    </span>
-                  </button>
-                );
-              })}
-              {filteredIconKeys.length === 0 && (
-                <div className="col-span-3 text-center py-8 text-xs text-slate-500">
-                  No matching icons found.
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Custom SVG Path Injector */}
-          <div className="glass-panel p-5 rounded-2xl space-y-4">
-            <div className="flex items-center gap-2">
-              <Plus className="w-4.5 h-4.5 text-indigo-400" />
-              <span className="text-xs font-bold text-white uppercase tracking-wider">
-                Inject Custom SVG
+              <span className="text-[10px] font-mono text-slate-400">
+                Studio Editor v1.0
               </span>
             </div>
 
-            <div className="space-y-3">
-              <div className="flex flex-col gap-1">
-                <label className="text-[10px] uppercase font-bold text-slate-500">Icon Name</label>
-                <input
-                  type="text"
-                  placeholder="e.g. ChevronRight, Bag"
-                  value={customIconName}
-                  onChange={(e) => setCustomIconName(e.target.value)}
-                  className="px-3 py-1.5 text-xs bg-slate-950/60 border border-slate-800 rounded-lg outline-none text-slate-200"
-                />
-              </div>
-
-              <div className="flex flex-col gap-1">
-                <label className="text-[10px] uppercase font-bold text-slate-500">SVG Inner Path Elements</label>
-                <textarea
-                  placeholder='e.g. <path d="m9 18 6-6-6-6"/>'
-                  value={customIconPath}
-                  onChange={(e) => setCustomIconPath(e.target.value)}
-                  className="px-3 py-2 text-xs bg-slate-950/60 border border-slate-800 rounded-lg outline-none text-slate-200 font-mono h-16 resize-none"
-                />
-              </div>
-
-              {customIconError && (
-                <div className="flex items-center gap-1.5 text-[9px] font-semibold text-rose-400">
-                  <AlertCircle className="w-3.5 h-3.5" />
-                  <span>{customIconError}</span>
-                </div>
-              )}
-
-              <button
-                onClick={handleAddCustomIcon}
-                disabled={!customIconName.trim() || !customIconPath.trim()}
-                className="w-full py-1.5 bg-slate-800 hover:bg-slate-700 text-xs font-bold rounded-lg text-white transition-all disabled:opacity-40 disabled:cursor-not-allowed active:scale-95"
-              >
-                Add to Catalog
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* Center panel: Customization controls (3 cols) */}
-        <div className="lg:col-span-3 space-y-4">
-          <div className="glass-panel p-5 rounded-2xl space-y-4">
-            <span className="text-xs font-bold text-white uppercase tracking-wider block">
-              Styling Rules
-            </span>
-            
-            {/* Color mapping */}
-            <div className="space-y-1.5">
-              <label className="text-[10px] uppercase font-bold text-slate-500">Stroke Color</label>
-              <select
-                value={selectedColor}
-                onChange={(e) => setSelectedColor(e.target.value as any)}
-                className="w-full px-3 py-2 text-xs bg-slate-950 border border-slate-800 rounded-lg text-slate-200 outline-none"
-              >
-                <option value="primary">Primary Brand</option>
-                <option value="secondary">Secondary UI</option>
-                <option value="accent">Accent Callout</option>
-                <option value="success">Success State</option>
-                <option value="warning">Warning State</option>
-                <option value="error">Error State</option>
-                <option value="info">Info State</option>
-              </select>
-            </div>
-
-            {/* Size mapping */}
-            <div className="space-y-1.5">
-              <label className="text-[10px] uppercase font-bold text-slate-500">Dimension Token</label>
-              <div className="grid grid-cols-3 gap-1">
-                {(['sizeSm', 'sizeMd', 'sizeLg'] as const).map((size) => (
-                  <button
-                    key={size}
-                    onClick={() => setIconSizeKey(size)}
-                    className="py-1 text-[10px] font-semibold border rounded-md bg-slate-950"
-                    style={{
-                      borderColor: iconSizeKey === size ? 'var(--color-primary)' : 'var(--color-border)',
-                      backgroundColor: iconSizeKey === size ? 'rgba(99, 102, 241, 0.12)' : 'transparent',
-                    }}
-                  >
-                    {size === 'sizeSm' ? 'sm' : size === 'sizeMd' ? 'md' : 'lg'}
-                  </button>
-                ))}
-              </div>
-              <span className="text-[10px] text-slate-500 block text-center font-mono mt-1">
-                Size Value: {tokens.icons[iconSizeKey]}
-              </span>
-            </div>
-            
-            {/* Active stroke width display */}
-            <div className="pt-3 border-t border-slate-800/80">
-              <span className="text-[10px] uppercase font-bold text-slate-500 block mb-1">Stroke Width</span>
-              <span className="text-xs font-mono font-semibold text-slate-300">{tokens.icons.strokeWidth}</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Right panel: Active live icon view + Exporters (4 cols) */}
-        <div className="lg:col-span-4 space-y-4">
-          <div className="glass-panel p-5 rounded-2xl flex flex-col items-center justify-between h-full min-h-[360px]">
-            <span className="text-xs font-bold text-white uppercase tracking-wider block self-start mb-4">
-              Visualizer
-            </span>
-            
-            {/* Live rendered icon */}
-            <div className="p-8 rounded-2xl border border-slate-800/80 flex items-center justify-center bg-slate-950/40 w-32 h-32 shadow-inner">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width={tokens.icons[iconSizeKey]}
-                height={tokens.icons[iconSizeKey]}
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke={tokens.colors[selectedColor][colorMode]}
-                strokeWidth={tokens.icons.strokeWidth}
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                dangerouslySetInnerHTML={{ __html: localIcons[selectedIcon] || '' }}
+            {/* Code editor textarea */}
+            <div className="relative">
+              <textarea
+                value={rawSvgCode}
+                onChange={(e) => setRawSvgCode(e.target.value)}
+                spellCheck={false}
+                className="w-full h-80 p-5 bg-slate-950 text-slate-300 font-mono text-[11px] leading-relaxed border border-slate-800 rounded-xl outline-none focus:ring-1 focus:ring-slate-700 resize-none overflow-y-auto"
               />
             </div>
 
-            {/* Exporter copy triggers */}
-            <div className="w-full space-y-2 mt-6">
+            {/* Quick Operations Strip */}
+            <div className="flex flex-wrap items-center gap-2 pt-3 border-t border-slate-100 justify-between">
+              
+              <div className="flex flex-wrap gap-1.5">
+                <button
+                  onClick={handleBeautifySvg}
+                  title="Format Code Layout"
+                  className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-[10px] font-bold rounded-lg text-slate-700 flex items-center gap-1 transition-all"
+                >
+                  <FileCode className="w-3 h-3 text-slate-500" />
+                  <span>Beautify</span>
+                </button>
+
+                <button
+                  onClick={handleOptimizeSvg}
+                  title="Minify and Clean XML tags"
+                  className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-[10px] font-bold rounded-lg text-slate-700 flex items-center gap-1 transition-all"
+                >
+                  <Minimize2 className="w-3 h-3 text-slate-500" />
+                  <span>Clean/Optimize</span>
+                </button>
+
+                <button
+                  onClick={handleSyncColors}
+                  title="Force replace fill/stroke codes to match active token color"
+                  className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-[10px] font-bold rounded-lg text-slate-700 flex items-center gap-1 transition-all"
+                >
+                  <RefreshCw className="w-3 h-3 text-slate-500" />
+                  <span>Sync Color</span>
+                </button>
+              </div>
+
+              {/* Save changes back to state */}
               <button
-                onClick={handleCopyIconSvg}
-                className="w-full py-2 px-3 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 border border-slate-700 hover:border-slate-600 transition-all text-white bg-slate-900 active:scale-95"
+                onClick={handleSaveToCatalog}
+                className="px-4 py-1.5 bg-slate-900 hover:bg-slate-800 text-[10px] font-bold rounded-lg text-white transition-all"
               >
-                {iconCopied === 'svg' ? (
-                  <>
-                    <Check className="w-3.5 h-3.5 text-emerald-400" />
-                    <span>SVG Copied!</span>
-                  </>
-                ) : (
-                  <>
-                    <Copy className="w-3.5 h-3.5" />
-                    <span>Copy SVG Code</span>
-                  </>
-                )}
+                {copiedState === 'saved' ? 'Saved to Catalog!' : 'Save changes to catalog'}
               </button>
 
-              <button
-                onClick={handleCopyIconJsx}
-                className="w-full py-2 px-3 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 transition-all text-white bg-slate-900 border border-slate-800 hover:bg-slate-800 active:scale-95"
-              >
-                {iconCopied === 'jsx' ? (
-                  <>
-                    <Check className="w-3.5 h-3.5 text-emerald-400" />
-                    <span>JSX Copied!</span>
-                  </>
-                ) : (
-                  <>
-                    <Copy className="w-3.5 h-3.5" />
-                    <span>Copy React JSX</span>
-                  </>
-                )}
-              </button>
-
-              <button
-                onClick={handleCopyFullLibrary}
-                className="w-full py-2 px-3 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 transition-all text-white bg-indigo-600 border border-indigo-500 hover:bg-indigo-500 active:scale-95"
-              >
-                {iconCopied === 'library' ? (
-                  <>
-                    <Check className="w-3.5 h-3.5 text-emerald-400" />
-                    <span>Full Library Copied!</span>
-                  </>
-                ) : (
-                  <>
-                    <Sparkles className="w-3.5 h-3.5 text-indigo-200" />
-                    <span>Copy React Library File</span>
-                  </>
-                )}
-              </button>
             </div>
+
+          </div>
+        </div>
+
+        {/* RIGHT PANE: Live Visualizer & Studio Control (5 Columns) */}
+        <div className="xl:col-span-5 space-y-4">
+          <div className="glass-panel p-5 rounded-2xl space-y-6">
+            
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-extrabold uppercase tracking-wider text-slate-800">
+                Visual Studio Canvas
+              </span>
+
+              {/* Background modes */}
+              <div className="flex border border-slate-200 bg-white rounded-lg p-0.5 shadow-sm text-[9px] font-extrabold">
+                <button
+                  onClick={() => setBgMode('grid')}
+                  className={`px-2 py-1 rounded ${bgMode === 'grid' ? 'bg-slate-900 text-white' : 'text-slate-500'}`}
+                >
+                  Grid
+                </button>
+                <button
+                  onClick={() => setBgMode('white')}
+                  className={`px-2 py-1 rounded ${bgMode === 'white' ? 'bg-slate-900 text-white' : 'text-slate-500'}`}
+                >
+                  Light
+                </button>
+                <button
+                  onClick={() => setBgMode('dark')}
+                  className={`px-2 py-1 rounded ${bgMode === 'dark' ? 'bg-slate-900 text-white' : 'text-slate-500'}`}
+                >
+                  Dark
+                </button>
+              </div>
+            </div>
+
+            {/* Visualizer output box */}
+            <div 
+              className="w-full h-56 rounded-xl border border-slate-200 flex items-center justify-center relative overflow-hidden transition-all duration-300"
+              style={gridStyle}
+            >
+              <div 
+                className="transition-all duration-150 flex items-center justify-center"
+                style={{
+                  transform: `rotate(${rotateAngle}deg) scaleX(${flipH ? -1 : 1}) scaleY(${flipV ? -1 : 1}) scale(${zoomLevel / 100})`,
+                }}
+                dangerouslySetInnerHTML={{ __html: rawSvgCode }}
+              />
+              
+              <div className="absolute bottom-2.5 left-3 text-[9px] font-mono text-slate-400/80 bg-slate-900/10 px-1.5 py-0.5 rounded">
+                Scale: {zoomLevel}% | Rot: {rotateAngle}°
+              </div>
+            </div>
+
+            {/* Controls panel: Zoom, Rotate, Flip */}
+            <div className="space-y-4 pt-4 border-t border-slate-100">
+              
+              {/* Zoom Slider */}
+              <div className="flex items-center justify-between gap-3 text-xs">
+                <span className="font-bold text-slate-500">Zoom Canvas</span>
+                <div className="flex items-center gap-2 flex-1 max-w-[200px]">
+                  <input
+                    type="range"
+                    min="50"
+                    max="300"
+                    value={zoomLevel}
+                    onChange={(e) => setZoomLevel(Number(e.target.value))}
+                    className="w-full accent-slate-900"
+                  />
+                  <span className="font-mono text-[10px] w-8 text-right font-bold text-slate-600">{zoomLevel}%</span>
+                </div>
+              </div>
+
+              {/* Transformations buttons */}
+              <div className="flex items-center justify-between text-xs pt-1">
+                <span className="font-bold text-slate-500">Transforms</span>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => setRotateAngle((prev) => (prev + 90) % 360)}
+                    className="p-1.5 border border-slate-200 rounded-lg hover:bg-slate-50 active:scale-90 transition-all flex items-center gap-1 text-[10px] font-bold text-slate-600"
+                    title="Rotate clockwise"
+                  >
+                    <RotateCw className="w-3.5 h-3.5" />
+                    <span>Rotate</span>
+                  </button>
+
+                  <button
+                    onClick={() => setFlipH(!flipH)}
+                    className={`p-1.5 border rounded-lg active:scale-90 transition-all text-[10px] font-bold ${
+                      flipH ? 'border-slate-800 bg-slate-900 text-white' : 'border-slate-200 text-slate-600 hover:bg-slate-50'
+                    }`}
+                  >
+                    Flip H
+                  </button>
+
+                  <button
+                    onClick={() => setFlipV(!flipV)}
+                    className={`p-1.5 border rounded-lg active:scale-90 transition-all text-[10px] font-bold ${
+                      flipV ? 'border-slate-800 bg-slate-900 text-white' : 'border-slate-200 text-slate-600 hover:bg-slate-50'
+                    }`}
+                  >
+                    Flip V
+                  </button>
+                </div>
+              </div>
+
+              {/* Dimensions and color binding */}
+              <div className="grid grid-cols-2 gap-4 pt-3 border-t border-slate-100">
+                <div className="space-y-1.5">
+                  <label className="text-[9px] uppercase font-extrabold text-slate-400">Color Token</label>
+                  <select
+                    value={selectedColor}
+                    onChange={(e) => setSelectedColor(e.target.value as any)}
+                    className="w-full px-2 py-1.5 text-xs bg-white border border-slate-200 rounded-lg text-slate-700 outline-none font-bold"
+                  >
+                    <option value="primary">Primary Brand</option>
+                    <option value="secondary">Secondary UI</option>
+                    <option value="accent">Accent Callout</option>
+                    <option value="success">Success State</option>
+                    <option value="warning">Warning State</option>
+                    <option value="error">Error State</option>
+                    <option value="info">Info State</option>
+                  </select>
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-[9px] uppercase font-extrabold text-slate-400">Dimension</label>
+                  <select
+                    value={iconSizeKey}
+                    onChange={(e) => setIconSizeKey(e.target.value as any)}
+                    className="w-full px-2 py-1.5 text-xs bg-white border border-slate-200 rounded-lg text-slate-700 outline-none font-bold"
+                  >
+                    <option value="sizeSm">Small ({tokens.icons.sizeSm})</option>
+                    <option value="sizeMd">Medium ({tokens.icons.sizeMd})</option>
+                    <option value="sizeLg">Large ({tokens.icons.sizeLg})</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Exporters code triggers */}
+              <div className="grid grid-cols-2 gap-2 pt-4">
+                <button
+                  onClick={handleCopyRawSvg}
+                  className="py-2 rounded-lg text-xs font-bold text-center border border-slate-700 text-white bg-slate-900 hover:bg-slate-800 transition-all active:scale-95 flex items-center justify-center gap-1.5"
+                >
+                  {copiedState === 'svg' ? (
+                    <>
+                      <Check className="w-3.5 h-3.5 text-emerald-400" />
+                      <span>Copied!</span>
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="w-3.5 h-3.5" />
+                      <span>Copy SVG</span>
+                    </>
+                  )}
+                </button>
+
+                <button
+                  onClick={handleCopyReactJsx}
+                  className="py-2 rounded-lg text-xs font-bold text-center border border-slate-200 hover:bg-slate-50 transition-all active:scale-95 flex items-center justify-center gap-1.5 text-slate-700"
+                >
+                  {copiedState === 'jsx' ? (
+                    <>
+                      <Check className="w-3.5 h-3.5 text-emerald-400" />
+                      <span>Copied!</span>
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="w-3.5 h-3.5" />
+                      <span>Copy JSX</span>
+                    </>
+                  )}
+                </button>
+
+                <button
+                  onClick={handleCopyDataUri}
+                  className="py-2 rounded-lg text-xs font-bold text-center border border-slate-200 hover:bg-slate-50 transition-all active:scale-95 flex items-center justify-center gap-1.5 text-slate-700"
+                >
+                  {copiedState === 'uri' ? (
+                    <>
+                      <Check className="w-3.5 h-3.5 text-emerald-400" />
+                      <span>Copied!</span>
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="w-3.5 h-3.5" />
+                      <span>Copy Data URI</span>
+                    </>
+                  )}
+                </button>
+
+                <button
+                  onClick={handleDownloadSvgFile}
+                  className="py-2 rounded-lg text-xs font-bold text-center border border-slate-200 hover:bg-slate-50 transition-all active:scale-95 flex items-center justify-center gap-1.5 text-slate-700"
+                >
+                  <Download className="w-3.5 h-3.5 text-slate-400" />
+                  <span>Download SVG</span>
+                </button>
+              </div>
+
+            </div>
+
           </div>
         </div>
 
       </div>
+
+      {/* ICON SELECTION CATALOG GRID (With checkboxes) */}
+      <div className="glass-panel p-6 rounded-2xl space-y-4">
+        
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h3 className="text-sm font-extrabold text-slate-800">Icon Catalog</h3>
+            <p className="text-[10px] text-slate-400">
+              Select or deselect icons to configure what goes into your exported library file.
+            </p>
+          </div>
+
+          {/* Catalog Operations */}
+          <div className="flex flex-wrap items-center gap-3">
+            <div className="flex border border-slate-200 bg-white rounded-lg p-0.5 text-[10px] font-extrabold shadow-sm">
+              <button
+                onClick={handleSelectAll}
+                className="px-2.5 py-1 rounded text-slate-700 hover:bg-slate-50"
+              >
+                Select All
+              </button>
+              <button
+                onClick={handleDeselectAll}
+                className="px-2.5 py-1 rounded text-slate-700 hover:bg-slate-50"
+              >
+                Deselect All
+              </button>
+            </div>
+
+            <div className="relative">
+              <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" />
+              <input
+                type="text"
+                placeholder="Filter catalog..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-8 pr-3 py-1 bg-white border border-slate-200 rounded-lg outline-none text-xs font-bold text-slate-700 max-w-[150px]"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Catalog grid */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-3">
+          {filteredIconKeys.map((iconName) => {
+            const isSelected = selectedIcon === iconName;
+            const isChecked = checkedIcons.includes(iconName);
+            const path = localIcons[iconName];
+            return (
+              <div
+                key={iconName}
+                onClick={() => setSelectedIcon(iconName)}
+                className="p-3 border rounded-xl flex flex-col items-center justify-center gap-2 cursor-pointer transition-all hover:shadow-sm relative select-none"
+                style={{
+                  borderColor: isSelected ? 'var(--color-primary)' : 'var(--color-border)',
+                  backgroundColor: isSelected ? 'rgba(99, 102, 241, 0.04)' : 'transparent',
+                }}
+              >
+                {/* Checkbox toggle inside card */}
+                <button
+                  onClick={(e) => handleToggleIconChecked(iconName, e)}
+                  className="absolute top-2 right-2 text-slate-400 hover:text-slate-600 transition-colors"
+                >
+                  {isChecked ? (
+                    <CheckSquare className="w-4 h-4 text-slate-800 fill-slate-100" />
+                  ) : (
+                    <Square className="w-4 h-4 text-slate-300" />
+                  )}
+                </button>
+
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke={isSelected ? 'var(--color-primary)' : 'var(--color-text-muted)'}
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  dangerouslySetInnerHTML={{ __html: path }}
+                />
+                <span className="text-[10px] font-extrabold truncate w-full text-slate-600 text-center">
+                  {iconName}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+
+      </div>
+
+      {/* SVG Vector Path Injector */}
+      <div className="glass-panel p-6 rounded-2xl space-y-4">
+        <div className="flex items-center gap-2">
+          <Plus className="w-4.5 h-4.5 text-indigo-500" />
+          <h3 className="text-sm font-extrabold text-slate-800">Inject Custom SVG Vector Asset</h3>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
+          <div className="space-y-1">
+            <label className="text-[10px] uppercase font-bold text-slate-400">Icon Name</label>
+            <input
+              type="text"
+              placeholder="e.g. ChevronRight, Heart"
+              value={customIconName}
+              onChange={(e) => setCustomIconName(e.target.value)}
+              className="w-full px-3 py-2 text-xs bg-white border border-slate-200 rounded-lg outline-none text-slate-700 font-bold"
+            />
+          </div>
+
+          <div className="space-y-1">
+            <label className="text-[10px] uppercase font-bold text-slate-400">SVG Inner Path Elements</label>
+            <input
+              type="text"
+              placeholder='e.g. <path d="m9 18 6-6-6-6"/>'
+              value={customIconPath}
+              onChange={(e) => setCustomIconPath(e.target.value)}
+              className="w-full px-3 py-2 text-xs bg-white border border-slate-200 rounded-lg outline-none text-slate-700 font-mono"
+            />
+          </div>
+
+          <div>
+            <button
+              onClick={handleAddCustomIcon}
+              disabled={!customIconName.trim() || !customIconPath.trim()}
+              className="w-full py-2 bg-slate-900 hover:bg-slate-800 text-xs font-bold rounded-lg text-white transition-all disabled:opacity-40 disabled:cursor-not-allowed active:scale-95 shadow-sm"
+            >
+              Add to Catalog
+            </button>
+          </div>
+        </div>
+
+        {customIconError && (
+          <div className="flex items-center gap-1.5 text-[9.5px] font-bold text-rose-500 mt-1">
+            <AlertCircle className="w-3.5 h-3.5" />
+            <span>{customIconError}</span>
+          </div>
+        )}
+      </div>
+
     </div>
   );
 };
