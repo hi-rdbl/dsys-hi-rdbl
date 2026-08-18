@@ -28,7 +28,7 @@ export const DesignSystemProvider: React.FC<{ children: React.ReactNode }> = ({ 
   const defaultPreset = presets[0];
   const [tokens, setTokens] = useState<DesignTokens>(JSON.parse(JSON.stringify(defaultPreset.tokens)));
   const [activePresetId, setActivePresetId] = useState<string>(defaultPreset.id);
-  const [colorMode, setColorMode] = useState<ColorMode>('dark');
+  const [colorMode, setColorMode] = useState<ColorMode>('light');
 
   // Check URL on startup for shared config
   useEffect(() => {
