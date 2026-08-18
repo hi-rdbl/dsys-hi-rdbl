@@ -66,6 +66,10 @@ export interface MotionToken {
   easeIn: string;
   easeOut: string;
   easeInOut: string;
+  buttonHoverScale: number; // e.g. 1.02
+  buttonActiveScale: number; // e.g. 0.96
+  buttonHoverEffect: 'scale' | 'glow' | 'shine' | 'border-beam' | 'slide-fill' | 'icon-reveal' | 'none';
+  buttonActiveEffect: 'shrink' | 'lift' | 'inset' | 'ripple' | 'none';
 }
 
 export interface IconToken {

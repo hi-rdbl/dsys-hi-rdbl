@@ -1,6 +1,6 @@
 import type { DesignSystemPreset } from '../types';
 
-export const presets: DesignSystemPreset[] = [
+const rawPresets: any[] = [
   {
     id: 'modern-saas',
     name: 'Modern SaaS (Slate & Violet)',
@@ -659,3 +659,17 @@ export const presets: DesignSystemPreset[] = [
     },
   },
 ];
+
+export const presets: DesignSystemPreset[] = rawPresets.map(preset => ({
+  ...preset,
+  tokens: {
+    ...preset.tokens,
+    motion: {
+      ...preset.tokens.motion,
+      buttonHoverScale: 1.02,
+      buttonActiveScale: 0.96,
+      buttonHoverEffect: 'scale',
+      buttonActiveEffect: 'shrink'
+    }
+  }
+})) as any;

@@ -13,7 +13,7 @@ interface DesignSystemContextType {
   updateSpacing: (baseUnit: number) => void;
   updateRadius: (key: keyof DesignTokens['radius'], value: string) => void;
   updateShadow: (key: keyof DesignTokens['shadows'], value: string) => void;
-  updateMotion: (key: keyof DesignTokens['motion'], value: string) => void;
+  updateMotion: (key: keyof DesignTokens['motion'], value: string | number) => void;
   updateIconToken: (key: keyof DesignTokens['icons'], value: string) => void;
   updateMetadata: (key: 'name' | 'author' | 'description' | 'version', value: string) => void;
   loadPreset: (presetId: string) => void;
@@ -107,7 +107,7 @@ export const DesignSystemProvider: React.FC<{ children: React.ReactNode }> = ({ 
     setActivePresetId('custom');
   };
 
-  const updateMotion = (key: keyof DesignTokens['motion'], value: string) => {
+  const updateMotion = (key: keyof DesignTokens['motion'], value: string | number) => {
     setTokens((prev) => ({
       ...prev,
       motion: {
@@ -221,6 +221,10 @@ export const DesignSystemProvider: React.FC<{ children: React.ReactNode }> = ({ 
               easeIn: motionObj.easing?.in?.$value || 'ease-in',
               easeOut: motionObj.easing?.out?.$value || 'ease-out',
               easeInOut: motionObj.easing?.easeInOut?.$value || 'ease-in-out',
+              buttonHoverScale: parseFloat(parsed.motion?.buttonHoverScale) || 1.02,
+              buttonActiveScale: parseFloat(parsed.motion?.buttonActiveScale) || 0.96,
+              buttonHoverEffect: parsed.motion?.buttonHoverEffect || 'scale',
+              buttonActiveEffect: parsed.motion?.buttonActiveEffect || 'shrink',
             },
             icons: {
               sizeSm: parsed.icons?.sizeSm || '14px',
