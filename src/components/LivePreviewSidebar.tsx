@@ -101,7 +101,7 @@ export const LivePreviewSidebar: React.FC = () => {
 
       {/* Scrollable Component Spec List */}
       <div 
-        className="flex-1 overflow-y-auto space-y-6 pr-1 pb-4 z-10"
+        className="flex-1 overflow-y-auto space-y-6 pr-1 pb-4 z-10 ds-preview-area"
         style={{
           fontFamily: 'var(--font-sans)',
         }}

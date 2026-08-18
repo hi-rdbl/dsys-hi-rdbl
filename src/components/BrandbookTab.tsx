@@ -63,7 +63,7 @@ export const BrandbookTab: React.FC = () => {
 
   return (
     <div 
-      className="space-y-8 animate-fadeIn p-6 md:p-10 rounded-[20px] border transition-colors duration-300 shadow-sm"
+      className="space-y-8 animate-fadeIn p-6 md:p-10 rounded-[20px] border transition-colors duration-300 shadow-sm ds-preview-area"
       style={{
         backgroundColor: tokens.colors.bg[colorMode],
         color: tokens.colors.text[colorMode],

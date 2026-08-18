@@ -31,7 +31,7 @@ import {
 type TabId = 'dashboard' | 'colors' | 'typography' | 'spacing' | 'motion' | 'components' | 'icons' | 'export' | 'brandbook';
 
 const MainDashboard: React.FC = () => {
-  const { tokens } = useDesignSystem();
+  const { tokens, colorMode } = useDesignSystem();
   const [activeTab, setActiveTab] = useState<TabId>('dashboard');
   const [showDownloadDropdown, setShowDownloadDropdown] = useState(false);
   const [copiedState, setCopiedState] = useState<'figma' | 'guidebook' | 'code' | null>(null);
@@ -282,6 +282,47 @@ const MainDashboard: React.FC = () => {
           </div>
         </div>
 
+        {/* Dynamic Sync Stylesheet for Component Previews */}
+        <style>{`
+          /* Dynamic Button Animation Sync */
+          .ds-preview-area button {
+            position: relative !important;
+            overflow: hidden !important;
+            transition: all ${tokens.motion.durationFast} ${tokens.motion.easeDefault} !important;
+          }
+
+          /* Hover scale & effects */
+          .ds-preview-area button:hover {
+            transform: scale(${tokens.motion.buttonHoverScale ?? 1.02}) !important;
+            ${(tokens.motion.buttonHoverEffect ?? 'scale') === 'glow' ? `box-shadow: 0 0 16px ${tokens.colors.primary[colorMode]}90, var(--shadow-md) !important;` : ''}
+            ${(tokens.motion.buttonActiveEffect ?? 'shrink') === 'lift' ? `transform: translateY(-2.5px) scale(${tokens.motion.buttonHoverScale ?? 1.02}) !important;` : ''}
+          }
+
+          /* Shine Sheen shine effect pseudo element */
+          .ds-preview-area button::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -70%;
+            width: 40%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+            transform: skewX(-20deg);
+            transition: left ${tokens.motion.durationNormal} ${tokens.motion.easeDefault} !important;
+            pointer-events: none;
+            display: ${(tokens.motion.buttonHoverEffect ?? 'scale') === 'shine' ? 'block' : 'none'};
+          }
+          .ds-preview-area button:hover::after {
+            left: 140% !important;
+          }
+
+          /* Active scale & press effects */
+          .ds-preview-area button:active {
+            transform: scale(${tokens.motion.buttonActiveScale ?? 0.96}) !important;
+            ${(tokens.motion.buttonActiveEffect ?? 'shrink') === 'inset' ? 'box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.45) !important;' : ''}
+            ${(tokens.motion.buttonActiveEffect ?? 'shrink') === 'lift' ? `transform: translateY(0px) scale(${tokens.motion.buttonActiveScale ?? 0.96}) !important;` : ''}
+          }
+        `}</style>
       </main>
 
       {/* Unified Component Playground (Sticky Column 3) */}
