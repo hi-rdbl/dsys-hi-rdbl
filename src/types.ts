@@ -21,6 +21,7 @@ export interface ColorPalette {
   warning: ColorToken;
   error: ColorToken;
   info: ColorToken;
+  [key: string]: ColorToken; // Index signature for dynamic custom color tokens
 }
 
 export interface TypographyToken {

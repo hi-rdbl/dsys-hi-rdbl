@@ -12,72 +12,15 @@ export const generateTokensJson = (tokens: DesignTokens): string => {
       version: tokens.version,
       generatedAt: new Date().toISOString(),
     },
-    color: {
-      brand: {
-        primary: {
-          light: { $value: tokens.colors.primary.light, $type: 'color', $description: tokens.colors.primary.description },
-          dark: { $value: tokens.colors.primary.dark, $type: 'color' },
-        },
-        primaryHover: {
-          light: { $value: tokens.colors.primaryHover.light, $type: 'color', $description: tokens.colors.primaryHover.description },
-          dark: { $value: tokens.colors.primaryHover.dark, $type: 'color' },
-        },
-        secondary: {
-          light: { $value: tokens.colors.secondary.light, $type: 'color', $description: tokens.colors.secondary.description },
-          dark: { $value: tokens.colors.secondary.dark, $type: 'color' },
-        },
-        secondaryHover: {
-          light: { $value: tokens.colors.secondaryHover.light, $type: 'color', $description: tokens.colors.secondaryHover.description },
-          dark: { $value: tokens.colors.secondaryHover.dark, $type: 'color' },
-        },
-        accent: {
-          light: { $value: tokens.colors.accent.light, $type: 'color', $description: tokens.colors.accent.description },
-          dark: { $value: tokens.colors.accent.dark, $type: 'color' },
-        },
-      },
-      surface: {
-        bg: {
-          light: { $value: tokens.colors.bg.light, $type: 'color', $description: tokens.colors.bg.description },
-          dark: { $value: tokens.colors.bg.dark, $type: 'color' },
-        },
-        card: {
-          light: { $value: tokens.colors.card.light, $type: 'color', $description: tokens.colors.card.description },
-          dark: { $value: tokens.colors.card.dark, $type: 'color' },
-        },
-        border: {
-          light: { $value: tokens.colors.border.light, $type: 'color', $description: tokens.colors.border.description },
-          dark: { $value: tokens.colors.border.dark, $type: 'color' },
-        },
-      },
-      text: {
-        main: {
-          light: { $value: tokens.colors.text.light, $type: 'color', $description: tokens.colors.text.description },
-          dark: { $value: tokens.colors.text.dark, $type: 'color' },
-        },
-        muted: {
-          light: { $value: tokens.colors.textMuted.light, $type: 'color', $description: tokens.colors.textMuted.description },
-          dark: { $value: tokens.colors.textMuted.dark, $type: 'color' },
-        },
-      },
-      feedback: {
-        success: {
-          light: { $value: tokens.colors.success.light, $type: 'color', $description: tokens.colors.success.description },
-          dark: { $value: tokens.colors.success.dark, $type: 'color' },
-        },
-        warning: {
-          light: { $value: tokens.colors.warning.light, $type: 'color', $description: tokens.colors.warning.description },
-          dark: { $value: tokens.colors.warning.dark, $type: 'color' },
-        },
-        error: {
-          light: { $value: tokens.colors.error.light, $type: 'color', $description: tokens.colors.error.description },
-          dark: { $value: tokens.colors.error.dark, $type: 'color' },
-        },
-        info: {
-          light: { $value: tokens.colors.info.light, $type: 'color', $description: tokens.colors.info.description },
-          dark: { $value: tokens.colors.info.dark, $type: 'color' },
-        },
-      },
-    },
+    color: Object.fromEntries(
+      Object.entries(tokens.colors).map(([key, token]) => [
+        key,
+        {
+          light: { $value: token.light, $type: 'color', $description: token.description },
+          dark: { $value: token.dark, $type: 'color' }
+        }
+      ])
+    ),
     typography: {
       family: { $value: tokens.typography.fontFamily, $type: 'fontFamily' },
       baseSize: { $value: `${tokens.typography.baseSize}px`, $type: 'dimension' },
@@ -120,6 +63,26 @@ export const generateTokensJson = (tokens: DesignTokens): string => {
 export const generateCssVariables = (tokens: DesignTokens): string => {
   const baseSpacing = tokens.spacing.baseUnit;
 
+  const lightColors = Object.entries(tokens.colors)
+    .map(([key, token]) => `  --color-${key.replace(/([A-Z])/g, '-$1').toLowerCase()}: ${token.light};`)
+    .join('\n');
+
+  const darkColors = Object.entries(tokens.colors)
+    .map(([key, token]) => `  --color-${key.replace(/([A-Z])/g, '-$1').toLowerCase()}: ${token.dark};`)
+    .join('\n');
+
+  const radii = Object.entries(tokens.radius)
+    .map(([key, val]) => `  --radius-${key}: ${val};`)
+    .join('\n');
+
+  const shadows = Object.entries(tokens.shadows)
+    .map(([key, val]) => `  --shadow-${key}: ${val};`)
+    .join('\n');
+
+  const spacing = tokens.spacing.scale
+    .map((multiplier) => `  --spacing-${multiplier}: ${baseSpacing * multiplier}px;`)
+    .join('\n');
+
   return `/* 
  * CSS Variables generated from ${tokens.name} by ${tokens.author}
  * Supporting theme switches via '.dark' class toggle on root.
@@ -130,51 +93,16 @@ export const generateCssVariables = (tokens: DesignTokens): string => {
   --font-sans: ${tokens.typography.fontFamily};
 
   /* Colors (Light Theme) */
-  --color-primary: ${tokens.colors.primary.light};
-  --color-primary-hover: ${tokens.colors.primaryHover.light};
-  --color-secondary: ${tokens.colors.secondary.light};
-  --color-secondary-hover: ${tokens.colors.secondaryHover.light};
-  --color-accent: ${tokens.colors.accent.light};
-  --color-bg: ${tokens.colors.bg.light};
-  --color-card: ${tokens.colors.card.light};
-  --color-border: ${tokens.colors.border.light};
-  --color-text: ${tokens.colors.text.light};
-  --color-text-muted: ${tokens.colors.textMuted.light};
-  --color-success: ${tokens.colors.success.light};
-  --color-warning: ${tokens.colors.warning.light};
-  --color-error: ${tokens.colors.error.light};
-  --color-info: ${tokens.colors.info.light};
+${lightColors}
 
   /* Border Radii */
-  --radius-none: ${tokens.radius.none};
-  --radius-xs: ${tokens.radius.xs};
-  --radius-sm: ${tokens.radius.sm};
-  --radius-md: ${tokens.radius.md};
-  --radius-lg: ${tokens.radius.lg};
-  --radius-xl: ${tokens.radius.xl};
-  --radius-xxl: ${tokens.radius.xxl};
-  --radius-full: ${tokens.radius.full};
-  --radius-button: ${tokens.radius.button};
+${radii}
 
   /* Shadows */
-  --shadow-none: ${tokens.shadows.none};
-  --shadow-sm: ${tokens.shadows.sm};
-  --shadow-md: ${tokens.shadows.md};
-  --shadow-lg: ${tokens.shadows.lg};
-  --shadow-xl: ${tokens.shadows.xl};
-  --shadow-focus: ${tokens.shadows.focus};
+${shadows}
 
   /* Spacing Scale (Base unit: ${baseSpacing}px) */
-  --spacing-1: ${baseSpacing * 1}px;
-  --spacing-2: ${baseSpacing * 2}px;
-  --spacing-3: ${baseSpacing * 3}px;
-  --spacing-4: ${baseSpacing * 4}px;
-  --spacing-5: ${baseSpacing * 5}px;
-  --spacing-6: ${baseSpacing * 6}px;
-  --spacing-8: ${baseSpacing * 8}px;
-  --spacing-10: ${baseSpacing * 10}px;
-  --spacing-12: ${baseSpacing * 12}px;
-  --spacing-16: ${baseSpacing * 16}px;
+${spacing}
 
   /* Motion */
   --motion-duration-fast: ${tokens.motion.durationFast};
@@ -194,20 +122,7 @@ export const generateCssVariables = (tokens: DesignTokens): string => {
 
 .dark {
   /* Colors (Dark Theme) Override */
-  --color-primary: ${tokens.colors.primary.dark};
-  --color-primary-hover: ${tokens.colors.primaryHover.dark};
-  --color-secondary: ${tokens.colors.secondary.dark};
-  --color-secondary-hover: ${tokens.colors.secondaryHover.dark};
-  --color-accent: ${tokens.colors.accent.dark};
-  --color-bg: ${tokens.colors.bg.dark};
-  --color-card: ${tokens.colors.card.dark};
-  --color-border: ${tokens.colors.border.dark};
-  --color-text: ${tokens.colors.text.dark};
-  --color-text-muted: ${tokens.colors.textMuted.dark};
-  --color-success: ${tokens.colors.success.dark};
-  --color-warning: ${tokens.colors.warning.dark};
-  --color-error: ${tokens.colors.error.dark};
-  --color-info: ${tokens.colors.info.dark};
+${darkColors}
 }
 `;
 };
@@ -216,6 +131,25 @@ export const generateCssVariables = (tokens: DesignTokens): string => {
  * Generates tailwind.config.js mapped to custom properties.
  */
 export const generateTailwindConfig = (tokens: DesignTokens): string => {
+  const colorMappings = Object.keys(tokens.colors)
+    .map((key) => {
+      const kebabName = key.replace(/([A-Z])/g, '-$1').toLowerCase();
+      return `        '${key}': 'var(--color-${kebabName})',`;
+    })
+    .join('\n');
+
+  const spacingMappings = tokens.spacing.scale
+    .map((multiplier) => `        'token-${multiplier}': 'var(--spacing-${multiplier})',`)
+    .join('\n');
+
+  const radiusMappings = Object.keys(tokens.radius)
+    .map((key) => `        '${key}': 'var(--radius-${key})',`)
+    .join('\n');
+
+  const shadowMappings = Object.keys(tokens.shadows)
+    .map((key) => `        '${key}': 'var(--shadow-${key})',`)
+    .join('\n');
+
   return `/** @type {import('tailwindcss').Config} */
 // Mapped configuration generated from ${tokens.name}
 module.exports = {
@@ -230,55 +164,16 @@ module.exports = {
         sans: ['var(--font-sans)', 'sans-serif'],
       },
       colors: {
-        primary: {
-          DEFAULT: 'var(--color-primary)',
-          hover: 'var(--color-primary-hover)',
-        },
-        secondary: {
-          DEFAULT: 'var(--color-secondary)',
-          hover: 'var(--color-secondary-hover)',
-        },
-        accent: 'var(--color-accent)',
-        bg: 'var(--color-bg)',
-        card: 'var(--color-card)',
-        border: 'var(--color-border)',
-        text: {
-          DEFAULT: 'var(--color-text)',
-          muted: 'var(--color-text-muted)',
-        },
-        success: 'var(--color-success)',
-        warning: 'var(--color-warning)',
-        error: 'var(--color-error)',
-        info: 'var(--color-info)',
+${colorMappings}
       },
       spacing: {
-        'token-1': 'var(--spacing-1)',
-        'token-2': 'var(--spacing-2)',
-        'token-3': 'var(--spacing-3)',
-        'token-4': 'var(--spacing-4)',
-        'token-5': 'var(--spacing-5)',
-        'token-6': 'var(--spacing-6)',
-        'token-8': 'var(--spacing-8)',
-        'token-10': 'var(--spacing-10)',
-        'token-12': 'var(--spacing-12)',
-        'token-16': 'var(--spacing-16)',
+${spacingMappings}
       },
       borderRadius: {
-        none: 'var(--radius-none)',
-        xs: 'var(--radius-xs)',
-        sm: 'var(--radius-sm)',
-        md: 'var(--radius-md)',
-        lg: 'var(--radius-lg)',
-        xl: 'var(--radius-xl)',
-        xxl: 'var(--radius-xxl)',
-        full: 'var(--radius-full)',
-        button: 'var(--radius-button)',
+${radiusMappings}
       },
       boxShadow: {
-        sm: 'var(--shadow-sm)',
-        md: 'var(--shadow-md)',
-        lg: 'var(--shadow-lg)',
-        xl: 'var(--shadow-xl)',
+${shadowMappings}
       },
       transitionDuration: {
         fast: 'var(--motion-duration-fast)',
@@ -371,6 +266,20 @@ export interface ToastProps {
  * Generates AI cursorrules mapping guidelines.
  */
 export const generateCursorRules = (tokens: DesignTokens): string => {
+  const baseSpacing = tokens.spacing.baseUnit;
+
+  const colorTableRows = Object.keys(tokens.colors)
+    .map((key) => {
+      const kebabName = key.replace(/([A-Z])/g, '-$1').toLowerCase();
+      return `| ${key} | \`var(--color-${kebabName})\` | \`var(--color-${kebabName})\` | \`bg-${key}\` / \`text-${key}\` |`;
+    })
+    .join('\n');
+
+  const spacingGuidelines = tokens.spacing.scale
+    .slice(0, 5)
+    .map((multiplier) => `- Token ${multiplier} (\`${baseSpacing * multiplier}px\` equivalent): Use class \`p-token-${multiplier}\` or \`m-token-${multiplier}\``)
+    .join('\n');
+
   return `# ${tokens.name} AI Coding Rules
 
 This ruleset guides AI code generators (Cursor, v0, Bolt, Copilot) to build UI components that conform 100% to the project's brand identity.
@@ -389,22 +298,13 @@ Ensure all dynamic colors are mapped as follows:
 
 | Target Area | Light CSS | Dark CSS | Tailwind Class |
 | :--- | :--- | :--- | :--- |
-| Primary Action | \`var(--color-primary)\` | \`var(--color-primary)\` | \`bg-primary text-white hover:bg-primary-hover\` |
-| Secondary Action | \`var(--color-secondary)\` | \`var(--color-secondary)\` | \`bg-secondary text-text hover:bg-secondary-hover\` |
-| Main Canvas | \`var(--color-bg)\` | \`var(--color-bg)\` | \`bg-bg text-text\` |
-| Card Surface | \`var(--color-card)\` | \`var(--color-card)\` | \`bg-card border-border\` |
-| Border Lines | \`var(--color-border)\` | \`var(--color-border)\` | \`border-border\` |
-| Text Primary | \`var(--color-text)\` | \`var(--color-text)\` | \`text-text\` |
-| Text Secondary | \`var(--color-text-muted)\` | \`var(--color-text-muted)\` | \`text-text-muted\` |
+${colorTableRows}
 
 ---
 
-## 3. Spatial & Responsive Spacing (Base Scale: ${tokens.spacing.baseUnit}px)
+## 3. Spatial & Responsive Spacing (Base Scale: ${baseSpacing}px)
 Always use the token spacing utility classes. Do not use standard Tailwind arbitrary padding:
-- Token 1 (\`4px\` equivalent): Use class \`p-token-1\` or \`m-token-1\`
-- Token 2 (\`8px\` equivalent): Use class \`p-token-2\` or \`m-token-2\`
-- Token 4 (\`16px\` equivalent): Use class \`p-token-4\` or \`m-token-4\`
-- Token 8 (\`32px\` equivalent): Use class \`p-token-8\` or \`m-token-8\`
+${spacingGuidelines}
 
 ---
 

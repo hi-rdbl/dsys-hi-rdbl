@@ -1,11 +1,25 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useDesignSystem } from '../context/DesignSystemContext';
 import { Grid, Minimize2 } from 'lucide-react';
 
 export const LayoutTab: React.FC = () => {
-  const { tokens, updateSpacing, updateRadius, updateIconToken } = useDesignSystem();
+  const { tokens, updateSpacing, updateRadius, updateIconToken, updateSpacingScale } = useDesignSystem();
   
   const baseUnit = tokens.spacing.baseUnit;
+  
+  // Local state to manage comma-separated multipliers input
+  const [scaleInput, setScaleInput] = useState(() => tokens.spacing.scale.join(', '));
+
+  const handleUpdateScaleArray = (val: string) => {
+    setScaleInput(val);
+    const parsed = val.split(',')
+      .map(num => parseInt(num.trim()))
+      .filter(num => !isNaN(num) && num > 0);
+    
+    if (parsed.length > 0) {
+      updateSpacingScale(parsed);
+    }
+  };
 
   return (
     <div className="space-y-8 animate-fadeIn">
@@ -24,15 +38,17 @@ export const LayoutTab: React.FC = () => {
           <div className="glass-panel p-5 rounded-2xl space-y-6">
             
             {/* Spacing modifiers */}
-            <div className="space-y-3">
+            <div className="space-y-4">
               <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
                 <Grid className="w-4 h-4 text-indigo-400" />
                 Spacing Base Unit
               </h3>
+              
               <div className="flex items-center justify-between text-xs font-semibold">
                 <span className="text-slate-300">Base Grid Multiplier</span>
                 <span className="text-indigo-400 font-mono">{baseUnit}px</span>
               </div>
+              
               <div className="flex items-center gap-3">
                 <input
                   type="range"
@@ -62,6 +78,21 @@ export const LayoutTab: React.FC = () => {
                     +
                   </button>
                 </div>
+              </div>
+
+              {/* Customizable Spacing Scale Array */}
+              <div className="flex flex-col gap-1.5 pt-3 border-t border-slate-800/40">
+                <label className="text-[10px] uppercase font-bold text-slate-500">Spacing Scale Array</label>
+                <input
+                  type="text"
+                  value={scaleInput}
+                  onChange={(e) => handleUpdateScaleArray(e.target.value)}
+                  className="w-full bg-slate-955 border border-slate-800 rounded px-2.5 py-1.5 text-xs text-slate-300 font-mono outline-none focus:border-slate-700"
+                  placeholder="e.g. 1, 2, 3, 4, 6, 8, 12, 16"
+                />
+                <span className="text-[9px] text-slate-500 leading-normal">
+                  Type multipliers separated by commas. Multiplies the base grid unit to generate layout spacing tokens.
+                </span>
               </div>
             </div>
 
@@ -211,7 +242,7 @@ export const LayoutTab: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Stroke */}
+                {/* Stroke Width */}
                 <div className="flex flex-col gap-1">
                   <label className="text-[10px] uppercase font-bold text-slate-500">Stroke</label>
                   <div className="flex items-center border border-slate-800 bg-slate-950/60 rounded-lg overflow-hidden h-8">
@@ -255,9 +286,9 @@ export const LayoutTab: React.FC = () => {
                   <div key={multiplier} className="flex items-center gap-4 text-xs font-mono">
                     <span className="w-20 text-slate-400 text-right">Token {multiplier}</span>
                     <span className="w-12 text-indigo-400 font-bold text-right">{pxVal}px</span>
-                    <div className="flex-1 h-5 bg-slate-950/60 rounded-md overflow-hidden border border-slate-900 flex items-center">
+                    <div className="flex-1 h-5 bg-slate-955 border border-slate-900 flex items-center">
                       <div 
-                        className="h-full bg-gradient-to-r from-indigo-500 to-indigo-600 rounded-md"
+                        className="h-full bg-gradient-to-r from-indigo-500 to-indigo-600 rounded-md animate-fadeIn"
                         style={{ width: `${pxVal * 3}px`, maxWidth: '100%' }}
                       />
                     </div>

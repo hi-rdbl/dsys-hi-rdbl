@@ -20,6 +20,9 @@ interface DesignSystemContextType {
   importTokens: (jsonStr: string) => { success: boolean; error?: string };
   getShareUrl: () => string;
   toggleColorMode: () => void;
+  addColorToken: (key: string, light: string, dark: string, description?: string) => void;
+  deleteColorToken: (key: string) => void;
+  updateSpacingScale: (scale: number[]) => void;
 }
 
 const DesignSystemContext = createContext<DesignSystemContextType | undefined>(undefined);
@@ -252,6 +255,41 @@ export const DesignSystemProvider: React.FC<{ children: React.ReactNode }> = ({ 
     setColorMode((prev) => (prev === 'light' ? 'dark' : 'light'));
   };
 
+  const addColorToken = (key: string, light: string, dark: string, description: string = '') => {
+    const formattedKey = key.replace(/[^a-zA-Z0-9]/g, '').replace(/^\w/, (c) => c.toLowerCase());
+    setTokens((prev) => ({
+      ...prev,
+      colors: {
+        ...prev.colors,
+        [formattedKey]: { light, dark, description }
+      }
+    }));
+    setActivePresetId('custom');
+  };
+
+  const deleteColorToken = (key: string) => {
+    setTokens((prev) => {
+      const newColors = { ...prev.colors };
+      delete newColors[key];
+      return {
+        ...prev,
+        colors: newColors
+      };
+    });
+    setActivePresetId('custom');
+  };
+
+  const updateSpacingScale = (scale: number[]) => {
+    setTokens((prev) => ({
+      ...prev,
+      spacing: {
+        ...prev.spacing,
+        scale
+      }
+    }));
+    setActivePresetId('custom');
+  };
+
   return (
     <DesignSystemContext.Provider
       value={{
@@ -271,6 +309,9 @@ export const DesignSystemProvider: React.FC<{ children: React.ReactNode }> = ({ 
         importTokens,
         getShareUrl,
         toggleColorMode,
+        addColorToken,
+        deleteColorToken,
+        updateSpacingScale,
       }}
     >
       {children}

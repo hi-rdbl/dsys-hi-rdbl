@@ -62,7 +62,7 @@ export const ComponentsTab: React.FC = () => {
 
     // Apply spacing scale
     const base = tokens.spacing.baseUnit;
-    [1, 2, 3, 4, 5, 6, 8, 10, 12, 16].forEach((scale) => {
+    tokens.spacing.scale.forEach((scale) => {
       el.style.setProperty(`--spacing-${scale}`, `${base * scale}px`);
     });
 
