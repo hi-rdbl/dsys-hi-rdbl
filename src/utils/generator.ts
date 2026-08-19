@@ -27,6 +27,10 @@ export const generateTokensJson = (tokens: DesignTokens): string => {
       lineHeight: { $value: tokens.typography.lineHeight, $type: 'dimension' },
       letterSpacing: { $value: tokens.typography.letterSpacing, $type: 'dimension' },
     },
+    spacing: {
+      baseUnit: { $value: tokens.spacing.baseUnit, $type: 'dimension' },
+      scale: { $value: tokens.spacing.scale, $type: 'custom' }
+    },
     radius: Object.fromEntries(
       Object.entries(tokens.radius).map(([key, val]) => [key, { $value: val, $type: 'dimension' }])
     ),

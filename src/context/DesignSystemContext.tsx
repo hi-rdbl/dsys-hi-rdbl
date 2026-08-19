@@ -160,39 +160,63 @@ export const DesignSystemProvider: React.FC<{ children: React.ReactNode }> = ({ 
           const motionObj = parsed.motion || {};
           const metadataObj = parsed.metadata || {};
 
-          // Rebuild DesignTokens shape
+          // Rebuild colors dynamically to support custom colors!
+          const colors: Record<string, any> = {};
+          
+          // Backwards compatibility: Check if it's nested under legacy namespaces
+          if (colorObj.brand || colorObj.surface || colorObj.text || colorObj.feedback) {
+            const getVal = (path: string[], fallback: string) => {
+              let curr = colorObj;
+              for (const p of path) {
+                if (curr && curr[p]) curr = curr[p];
+                else return fallback;
+              }
+              return curr.$value || fallback;
+            };
+
+            colors.primary = { light: getVal(['brand', 'primary', 'light'], '#6366f1'), dark: getVal(['brand', 'primary', 'dark'], '#818cf8'), description: 'Brand primary' };
+            colors.primaryHover = { light: getVal(['brand', 'primaryHover', 'light'], '#4f46e5'), dark: getVal(['brand', 'primaryHover', 'dark'], '#6366f1'), description: 'Brand primary hover' };
+            colors.secondary = { light: getVal(['brand', 'secondary', 'light'], '#64748b'), dark: getVal(['brand', 'secondary', 'dark'], '#94a3b8'), description: 'Secondary UI' };
+            colors.secondaryHover = { light: getVal(['brand', 'secondaryHover', 'light'], '#475569'), dark: getVal(['brand', 'secondaryHover', 'dark'], '#cbd5e1'), description: 'Secondary UI hover' };
+            colors.accent = { light: getVal(['brand', 'accent', 'light'], '#a855f7'), dark: getVal(['brand', 'accent', 'dark'], '#c084fc'), description: 'Accent' };
+            colors.bg = { light: getVal(['surface', 'bg', 'light'], '#f8fafc'), dark: getVal(['surface', 'bg', 'dark'], '#0b0f19'), description: 'Background' };
+            colors.card = { light: getVal(['surface', 'card', 'light'], '#ffffff'), dark: getVal(['surface', 'card', 'dark'], '#111827'), description: 'Card Surface' };
+            colors.border = { light: getVal(['surface', 'border', 'light'], '#e2e8f0'), dark: getVal(['surface', 'border', 'dark'], '#1f2937'), description: 'Borders' };
+            colors.text = { light: getVal(['text', 'main', 'light'], '#0f172a'), dark: getVal(['text', 'main', 'dark'], '#f8fafc'), description: 'Text main' };
+            colors.textMuted = { light: getVal(['text', 'muted', 'light'], '#64748b'), dark: getVal(['text', 'muted', 'dark'], '#94a3b8'), description: 'Text muted' };
+            colors.success = { light: getVal(['feedback', 'success', 'light'], '#10b981'), dark: getVal(['feedback', 'success', 'dark'], '#34d399'), description: 'Success' };
+            colors.warning = { light: getVal(['feedback', 'warning', 'light'], '#f59e0b'), dark: getVal(['feedback', 'warning', 'dark'], '#fbbf24'), description: 'Warning' };
+            colors.error = { light: getVal(['feedback', 'error', 'light'], '#ef4444'), dark: getVal(['feedback', 'error', 'dark'], '#f87171'), description: 'Error' };
+            colors.info = { light: getVal(['feedback', 'info', 'light'], '#3b82f6'), dark: getVal(['feedback', 'info', 'dark'], '#60a5fa'), description: 'Info' };
+          } else {
+            // Flat custom-color structure we generate and export
+            Object.entries(colorObj).forEach(([key, val]: [string, any]) => {
+              colors[key] = {
+                light: val.light?.$value || '#6366f1',
+                dark: val.dark?.$value || '#818cf8',
+                description: val.light?.$description || `${key} color`
+              };
+            });
+          }
+
+          // Safe fallback checking for all variables
           importedTokens = {
             name: metadataObj.name || 'Imported Design Tokens',
             author: metadataObj.author || 'Imported User',
             description: metadataObj.description || 'Imported via JSON upload',
             version: metadataObj.version || '1.0.0',
             targetFramework: 'react-tailwind',
-            colors: {
-              primary: { light: colorObj.brand?.primary?.light?.$value || '#6366f1', dark: colorObj.brand?.primary?.dark?.$value || '#818cf8', description: 'Brand primary' },
-              primaryHover: { light: colorObj.brand?.primaryHover?.light?.$value || '#4f46e5', dark: colorObj.brand?.primaryHover?.dark?.$value || '#6366f1', description: 'Brand primary hover' },
-              secondary: { light: colorObj.brand?.secondary?.light?.$value || '#64748b', dark: colorObj.brand?.secondary?.dark?.$value || '#94a3b8', description: 'Secondary UI' },
-              secondaryHover: { light: colorObj.brand?.secondaryHover?.light?.$value || '#475569', dark: colorObj.brand?.secondaryHover?.dark?.$value || '#cbd5e1', description: 'Secondary UI hover' },
-              accent: { light: colorObj.brand?.accent?.light?.$value || '#a855f7', dark: colorObj.brand?.accent?.dark?.$value || '#c084fc', description: 'Accent' },
-              bg: { light: colorObj.surface?.bg?.light?.$value || '#f8fafc', dark: colorObj.surface?.bg?.dark?.$value || '#0b0f19', description: 'Background' },
-              card: { light: colorObj.surface?.card?.light?.$value || '#ffffff', dark: colorObj.surface?.card?.dark?.$value || '#111827', description: 'Card Surface' },
-              border: { light: colorObj.surface?.border?.light?.$value || '#e2e8f0', dark: colorObj.surface?.border?.dark?.$value || '#1f2937', description: 'Borders' },
-              text: { light: colorObj.text?.main?.light?.$value || '#0f172a', dark: colorObj.text?.main?.dark?.$value || '#f8fafc', description: 'Text main' },
-              textMuted: { light: colorObj.text?.muted?.light?.$value || '#64748b', dark: colorObj.text?.muted?.dark?.$value || '#94a3b8', description: 'Text muted' },
-              success: { light: colorObj.feedback?.success?.light?.$value || '#10b981', dark: colorObj.feedback?.success?.dark?.$value || '#34d399', description: 'Success' },
-              warning: { light: colorObj.feedback?.warning?.light?.$value || '#f59e0b', dark: colorObj.feedback?.warning?.dark?.$value || '#fbbf24', description: 'Warning' },
-              error: { light: colorObj.feedback?.error?.light?.$value || '#ef4444', dark: colorObj.feedback?.error?.dark?.$value || '#f87171', description: 'Error' },
-              info: { light: colorObj.feedback?.info?.light?.$value || '#3b82f6', dark: colorObj.feedback?.info?.dark?.$value || '#60a5fa', description: 'Info' },
-            },
+            colors: colors as any,
             typography: {
               fontFamily: typographyObj.family?.$value || "'Inter', sans-serif",
               baseSize: parseInt(typographyObj.baseSize?.$value) || 16,
-              scaleFactor: 1.2,
+              scaleFactor: parseFloat(typographyObj.scaleFactor?.$value) || 1.2,
               lineHeight: typographyObj.lineHeight?.$value || '1.5',
               letterSpacing: typographyObj.letterSpacing?.$value || '-0.011em',
             },
             spacing: {
-              baseUnit: 4,
-              scale: [1, 2, 3, 4, 5, 6, 8, 10, 12, 16],
+              baseUnit: parseInt(parsed.spacing?.baseUnit?.$value) || 4,
+              scale: parsed.spacing?.scale?.$value || [1, 2, 3, 4, 5, 6, 8, 10, 12, 16],
             },
             radius: {
               none: radiusObj.none?.$value || '0px',
@@ -211,7 +235,7 @@ export const DesignSystemProvider: React.FC<{ children: React.ReactNode }> = ({ 
               md: shadowObj.md?.$value || '0 4px 6px -1px rgba(0,0,0,0.1)',
               lg: shadowObj.lg?.$value || '0 10px 15px -3px rgba(0,0,0,0.1)',
               xl: shadowObj.xl?.$value || '0 20px 25px -5px rgba(0,0,0,0.1)',
-              focus: shadowObj.focus?.$value || '0 0 0 4px rgba(99,102,241,0.5)',
+              focus: shadowObj.focus?.$value || '0 0 0 2px #fff, 0 0 0 4px #6366f1',
             },
             motion: {
               durationFast: motionObj.duration?.fast?.$value || '150ms',
@@ -221,16 +245,16 @@ export const DesignSystemProvider: React.FC<{ children: React.ReactNode }> = ({ 
               easeIn: motionObj.easing?.in?.$value || 'ease-in',
               easeOut: motionObj.easing?.out?.$value || 'ease-out',
               easeInOut: motionObj.easing?.easeInOut?.$value || 'ease-in-out',
-              buttonHoverScale: parseFloat(parsed.motion?.buttonHoverScale) || 1.02,
-              buttonActiveScale: parseFloat(parsed.motion?.buttonActiveScale) || 0.96,
-              buttonHoverEffect: parsed.motion?.buttonHoverEffect || 'scale',
-              buttonActiveEffect: parsed.motion?.buttonActiveEffect || 'shrink',
+              buttonHoverScale: parseFloat(motionObj.buttonHoverScale?.$value || parsed.motion?.buttonHoverScale) || 1.02,
+              buttonActiveScale: parseFloat(motionObj.buttonActiveScale?.$value || parsed.motion?.buttonActiveScale) || 0.96,
+              buttonHoverEffect: motionObj.buttonHoverEffect?.$value || parsed.motion?.buttonHoverEffect || 'scale',
+              buttonActiveEffect: motionObj.buttonActiveEffect?.$value || parsed.motion?.buttonActiveEffect || 'shrink',
             },
             icons: {
-              sizeSm: parsed.icons?.sizeSm || '14px',
-              sizeMd: parsed.icons?.sizeMd || '18px',
-              sizeLg: parsed.icons?.sizeLg || '24px',
-              strokeWidth: parsed.icons?.strokeWidth || '1.5px',
+              sizeSm: parsed.icons?.sizeSm?.$value || parsed.icons?.sizeSm || '14px',
+              sizeMd: parsed.icons?.sizeMd?.$value || parsed.icons?.sizeMd || '18px',
+              sizeLg: parsed.icons?.sizeLg?.$value || parsed.icons?.sizeLg || '24px',
+              strokeWidth: parsed.icons?.strokeWidth?.$value || parsed.icons?.strokeWidth || '1.5px',
             },
           };
         } else {
