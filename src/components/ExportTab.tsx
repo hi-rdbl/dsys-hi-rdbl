@@ -6,21 +6,76 @@ import {
   generateTailwindConfig,
   generateTypesTs,
   generateCursorRules,
+  generateMaterialWebCss,
+  generateMaterialAndroidXml,
+  generateMaterialComposeKotlin,
+  generateMaterialFlutterDart,
 } from '../utils/generator';
 import { Copy, Check, Download, Share2, CheckCircle } from 'lucide-react';
 
+type ExportTabId = 
+  | 'json' 
+  | 'css' 
+  | 'tailwind' 
+  | 'materialWeb' 
+  | 'materialAndroid' 
+  | 'materialCompose' 
+  | 'materialFlutter' 
+  | 'types' 
+  | 'cursorrules';
+
 export const ExportTab: React.FC = () => {
   const { tokens, getShareUrl } = useDesignSystem();
-  const [activeTab, setActiveTab] = useState<'json' | 'css' | 'tailwind' | 'types' | 'cursorrules'>('json');
+  const [activeTab, setActiveTab] = useState<ExportTabId>('json');
   const [copied, setCopied] = useState(false);
   const [shareCopied, setShareCopied] = useState(false);
 
   const contents = {
-    json: { code: generateTokensJson(tokens), fileName: 'tokens.json', desc: 'Industry-standard W3C Draft design tokens.' },
-    css: { code: generateCssVariables(tokens), fileName: 'variables.css', desc: 'CSS custom properties supporting automatic theme toggle.' },
-    tailwind: { code: generateTailwindConfig(tokens), fileName: 'tailwind.config.js', desc: 'Extend custom properties directly in Tailwind config.' },
-    types: { code: generateTypesTs(tokens), fileName: 'types.ts', desc: 'TypeScript prop interfaces for component variations.' },
-    cursorrules: { code: generateCursorRules(tokens), fileName: '.cursorrules', desc: 'AI Coding instructions to enforce styling rules.' },
+    json: { 
+      code: generateTokensJson(tokens), 
+      fileName: 'tokens.json', 
+      desc: 'Industry-standard W3C Draft design tokens.' 
+    },
+    css: { 
+      code: generateCssVariables(tokens), 
+      fileName: 'variables.css', 
+      desc: 'CSS custom properties supporting automatic theme toggle.' 
+    },
+    tailwind: { 
+      code: generateTailwindConfig(tokens), 
+      fileName: 'tailwind.config.js', 
+      desc: 'Extend custom properties directly in Tailwind config.' 
+    },
+    materialWeb: {
+      code: generateMaterialWebCss(tokens),
+      fileName: 'material-web.css',
+      desc: 'Material Web Components (material-web) CSS custom properties.'
+    },
+    materialAndroid: {
+      code: generateMaterialAndroidXml(tokens),
+      fileName: 'colors.xml',
+      desc: 'Android Resources XML color files compatible with material-components-android.'
+    },
+    materialCompose: {
+      code: generateMaterialComposeKotlin(tokens),
+      fileName: 'Theme.kt',
+      desc: 'Jetpack Compose Kotlin ColorScheme properties.'
+    },
+    materialFlutter: {
+      code: generateMaterialFlutterDart(tokens),
+      fileName: 'app_theme.dart',
+      desc: 'Flutter ThemeData configurations compatible with material-components-flutter.'
+    },
+    types: { 
+      code: generateTypesTs(tokens), 
+      fileName: 'types.ts', 
+      desc: 'TypeScript prop interfaces for component variations.' 
+    },
+    cursorrules: { 
+      code: generateCursorRules(tokens), 
+      fileName: '.cursorrules', 
+      desc: 'AI Coding instructions to enforce styling rules.' 
+    },
   };
 
   const handleCopy = () => {

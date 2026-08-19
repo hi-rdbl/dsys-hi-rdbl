@@ -324,3 +324,171 @@ Map elements to their target styling specs:
 - Heavy elements entry (Modal fade in, panel slide in): \`duration-slow\`
 `;
 };
+
+/**
+ * Generates variables conforming to Material Web Components specifications.
+ */
+export const generateMaterialWebCss = (tokens: DesignTokens): string => {
+  const lightColors = Object.entries(tokens.colors)
+    .map(([key, token]) => `  --md-sys-color-${key.replace(/([A-Z])/g, '-$1').toLowerCase()}: ${token.light};`)
+    .join('\n');
+
+  const darkColors = Object.entries(tokens.colors)
+    .map(([key, token]) => `  --md-sys-color-${key.replace(/([A-Z])/g, '-$1').toLowerCase()}: ${token.dark};`)
+    .join('\n');
+
+  return `/* 
+ * Material Web Components (MWC) Variables
+ * Compatible with github.com/material-components/material-web
+ */
+
+:root {
+${lightColors}
+
+  /* Shape tokens */
+  --md-sys-shape-corner-small: ${tokens.radius.sm};
+  --md-sys-shape-corner-medium: ${tokens.radius.md};
+  --md-sys-shape-corner-large: ${tokens.radius.lg};
+  --md-sys-shape-corner-full: ${tokens.radius.full};
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+${darkColors}
+  }
+}
+`;
+};
+
+/**
+ * Generates Android XML colors.xml resource files.
+ */
+export const generateMaterialAndroidXml = (tokens: DesignTokens): string => {
+  const lightColors = Object.entries(tokens.colors)
+    .map(([key, token]) => `    <color name="md_theme_light_${key.replace(/([A-Z])/g, '_$1').toLowerCase()}">${token.light}</color>`)
+    .join('\n');
+
+  const darkColors = Object.entries(tokens.colors)
+    .map(([key, token]) => `    <color name="md_theme_dark_${key.replace(/([A-Z])/g, '_$1').toLowerCase()}">${token.dark}</color>`)
+    .join('\n');
+
+  return `<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+  Material Components Android Resource Colors
+  Compatible with github.com/material-components/material-components-android
+-->
+<resources>
+  <!-- Light Theme Mappings -->
+${lightColors}
+
+  <!-- Dark Theme Mappings -->
+${darkColors}
+  
+  <!-- Shapes & Radii -->
+  <dimen name="md_sys_shape_corner_small">${tokens.radius.sm}</dimen>
+  <dimen name="md_sys_shape_corner_medium">${tokens.radius.md}</dimen>
+  <dimen name="md_sys_shape_corner_large">${tokens.radius.lg}</dimen>
+</resources>
+`;
+};
+
+/**
+ * Generates Jetpack Compose Color & ColorScheme Kotlin theme file.
+ */
+export const generateMaterialComposeKotlin = (tokens: DesignTokens): string => {
+  const lightColors = Object.entries(tokens.colors)
+    .map(([key, token]) => `val Light${key.charAt(0).toUpperCase() + key.slice(1)} = Color(0xFF${token.light.replace('#', '')})`)
+    .join('\n');
+
+  const darkColors = Object.entries(tokens.colors)
+    .map(([key, token]) => `val Dark${key.charAt(0).toUpperCase() + key.slice(1)} = Color(0xFF${token.dark.replace('#', '')})`)
+    .join('\n');
+
+  return `package com.example.ui.theme
+
+import androidx.compose.material3.lightColorScheme
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.ui.graphics.Color
+
+/* 
+ * Jetpack Compose Material 3 Theme Color Mappings
+ * Compatible with material-components for Android / Jetpack Compose
+ */
+
+// Light Theme Raw Colors
+${lightColors}
+
+// Dark Theme Raw Colors
+${darkColors}
+
+val LightColorScheme = lightColorScheme(
+  primary = LightPrimary,
+  secondary = LightSecondary,
+  background = LightBg,
+  surface = LightCard,
+  error = LightError,
+)
+
+val DarkColorScheme = darkColorScheme(
+  primary = DarkPrimary,
+  secondary = DarkSecondary,
+  background = DarkBg,
+  surface = DarkCard,
+  error = DarkError,
+)
+`;
+};
+
+/**
+ * Generates Flutter Dart theme definition class.
+ */
+export const generateMaterialFlutterDart = (tokens: DesignTokens): string => {
+  const lightColors = Object.entries(tokens.colors)
+    .map(([key, token]) => `  static const Color light${key.charAt(0).toUpperCase() + key.slice(1)} = Color(0xFF${token.light.replace('#', '')});`)
+    .join('\n');
+
+  const darkColors = Object.entries(tokens.colors)
+    .map(([key, token]) => `  static const Color dark${key.charAt(0).toUpperCase() + key.slice(1)} = Color(0xFF${token.dark.replace('#', '')});`)
+    .join('\n');
+
+  return `import 'package:flutter/material.dart';
+
+/*
+ * Flutter Material Components Theme Overrides
+ * Compatible with github.com/material-components/material-components-flutter
+ */
+class AppTheme {
+  // Light Theme Colors
+${lightColors}
+
+  // Dark Theme Colors
+${darkColors}
+
+  static ThemeData get lightTheme {
+    return ThemeData(
+      useMaterial3: true,
+      fontFamily: '${tokens.typography.fontFamily.replace(/'/g, '')}',
+      colorScheme: const ColorScheme.light(
+        primary: lightPrimary,
+        secondary: lightSecondary,
+        surface: lightCard,
+        error: lightError,
+      ),
+    );
+  }
+
+  static ThemeData get darkTheme {
+    return ThemeData(
+      useMaterial3: true,
+      fontFamily: '${tokens.typography.fontFamily.replace(/'/g, '')}',
+      colorScheme: const ColorScheme.dark(
+        primary: darkPrimary,
+        secondary: darkSecondary,
+        surface: darkCard,
+        error: darkError,
+      ),
+    );
+  }
+}
+`;
+};
