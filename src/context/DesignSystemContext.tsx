@@ -27,6 +27,43 @@ interface DesignSystemContextType {
 
 const DesignSystemContext = createContext<DesignSystemContextType | undefined>(undefined);
 
+// Safe deep-merger to prevent crash when properties are missing in legacy or custom formats
+const normalizeTokens = (decoded: any, defaultTokens: DesignTokens): DesignTokens => {
+  if (!decoded || typeof decoded !== 'object') return defaultTokens;
+  return {
+    ...defaultTokens,
+    ...decoded,
+    colors: {
+      ...defaultTokens.colors,
+      ...(decoded.colors || {})
+    },
+    typography: {
+      ...defaultTokens.typography,
+      ...(decoded.typography || {})
+    },
+    spacing: {
+      ...defaultTokens.spacing,
+      ...(decoded.spacing || {})
+    },
+    radius: {
+      ...defaultTokens.radius,
+      ...(decoded.radius || {})
+    },
+    shadows: {
+      ...defaultTokens.shadows,
+      ...(decoded.shadows || {})
+    },
+    motion: {
+      ...defaultTokens.motion,
+      ...(decoded.motion || {})
+    },
+    icons: {
+      ...defaultTokens.icons,
+      ...(decoded.icons || {})
+    }
+  };
+};
+
 export const DesignSystemProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const defaultPreset = presets[0];
   const [tokens, setTokens] = useState<DesignTokens>(JSON.parse(JSON.stringify(defaultPreset.tokens)));
@@ -40,10 +77,10 @@ export const DesignSystemProvider: React.FC<{ children: React.ReactNode }> = ({ 
     if (sharedData) {
       const decoded = decodeTokens(sharedData);
       if (decoded) {
-        setTokens(decoded);
+        setTokens(normalizeTokens(decoded, defaultPreset.tokens));
         setActivePresetId('custom-shared');
         // Trigger a nice console flag
-        console.log('Successfully loaded shared design tokens from URL!');
+        console.log('Successfully loaded and normalized shared design tokens from URL!');
       }
     }
   }, []);
@@ -262,7 +299,7 @@ export const DesignSystemProvider: React.FC<{ children: React.ReactNode }> = ({ 
           importedTokens = parsed as DesignTokens;
         }
 
-        setTokens(importedTokens);
+        setTokens(normalizeTokens(importedTokens, defaultPreset.tokens));
         setActivePresetId('custom-imported');
         return { success: true };
       }
